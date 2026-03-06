@@ -5,10 +5,8 @@ import {
   Container,
   Section,
   Text,
-  Button,
   Hr,
   Heading,
-  Img,
   Preview,
   Tailwind,
 } from "@react-email/components";
