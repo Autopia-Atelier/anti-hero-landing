@@ -1,7 +1,7 @@
 import Link from "next/link";
 import {
   Triangle,
-  Atom,
+  Orbit,
   FileCode2,
   Wind,
   Droplets,
@@ -17,7 +17,7 @@ import type { LucideIcon } from "lucide-react";
 
 const stack: { name: string; desc: string; href: string; icon: LucideIcon }[] = [
   { name: "Next.js", desc: "Framework", href: "https://nextjs.org", icon: Triangle },
-  { name: "React", desc: "UI Library", href: "https://react.dev", icon: Atom },
+  { name: "Motion", desc: "Animation", href: "https://motion.dev", icon: Orbit },
   { name: "TypeScript", desc: "Language", href: "https://typescriptlang.org", icon: FileCode2 },
   { name: "Tailwind", desc: "Styling", href: "https://tailwindcss.com", icon: Wind },
   { name: "Drizzle", desc: "ORM", href: "https://orm.drizzle.team", icon: Droplets },

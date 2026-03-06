@@ -23,7 +23,7 @@ export default function SignIn() {
   };
 
   return (
-    <div className="h-full w-full border-x">
+    <div className="h-full w-full">
       <div className="flex h-full">
         <div className="relative flex flex-col items-center justify-center w-full">
           <ModeToggle className="absolute top-4 right-4" />
