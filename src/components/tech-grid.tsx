@@ -24,7 +24,7 @@ const stack: { name: string; desc: string; href: string; icon: LucideIcon }[] = 
   { name: "Neon", desc: "Database", href: "https://neon.tech", icon: Database },
   { name: "Better Auth", desc: "Auth", href: "https://better-auth.com", icon: ShieldCheck },
   { name: "Dodo", desc: "Payments", href: "https://dodopayments.com", icon: CreditCard },
-  { name: "Unosend", desc: "Emails", href: "https://unosend.com", icon: Send },
+  { name: "Resend", desc: "Emails", href: "https://resend.com", icon: Send },
   { name: "shadcn/ui", desc: "Components", href: "https://ui.shadcn.com", icon: Component },
 ];
 
