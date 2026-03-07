@@ -251,7 +251,6 @@ export default function DocsPage() {
           Akira
         </a>
         <div className="flex items-center gap-3">
-          <ModeToggle />
           <UserDropdown />
         </div>
         <div className="z-10 absolute bottom-0 left-0 -translate-x-1/2 translate-y-1/2 size-2.5 rounded-full border border-border bg-background" />
