@@ -10,8 +10,8 @@ export default function SignIn() {
   const handleSocialSignIn = async (provider: "google" | "github") => {
     const { error } = await signIn.social({
       provider,
-      callbackURL: "/",
-      newUserCallbackURL: "/",
+      callbackURL: "/docs",
+      newUserCallbackURL: "/docs",
     });
 
     if (error) {

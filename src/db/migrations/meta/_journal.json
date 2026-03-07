@@ -8,6 +8,13 @@
       "when": 1772632995051,
       "tag": "0000_harsh_cobalt_man",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1772872404942,
+      "tag": "0001_pretty_lester",
+      "breakpoints": true
     }
   ]
 }

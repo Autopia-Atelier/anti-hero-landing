@@ -77,7 +77,7 @@ export function TechGrid() {
           />
 
           <div className="flex flex-col items-center gap-1">
-            <span className="text-[10px] tracking-widest uppercase text-muted-foreground transition-colors duration-300 group-hover:text-foreground font-(family-name:--font-geist-pixel-square)">
+            <span className="text-[10px] tracking-widest uppercase text-muted-foreground transition-colors duration-300 group-hover:text-foreground font-pixel-square">
               {tech.name}
             </span>
             <span className="text-[9px] text-muted-foreground/50 transition-all duration-300 group-hover:text-muted-foreground">

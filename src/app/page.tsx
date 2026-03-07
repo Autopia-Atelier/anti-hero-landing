@@ -3,8 +3,17 @@
 import { TechGrid } from "@/components/tech-grid";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowRightIcon, GithubIcon, ArrowRight, ArrowUpRight } from "lucide-react";
+import {
+  ArrowRightIcon,
+  GithubIcon,
+  ArrowRight,
+  ArrowUpRight,
+} from "lucide-react";
+import ModeToggle from "@/components/mode-toggle/mode-toggle";
+import { UserDropdown } from "@/components/user-dropdown";
+import { useSession } from "@/lib/auth-client";
 import { motion } from "motion/react";
+import Link from "next/link";
 
 const RUNG_COUNT = 10;
 
@@ -28,22 +37,13 @@ const Ladder = ({ side }: { side: "left" | "right" }) => (
         key={i}
         className={`relative ${side === "left" ? "border-r" : "border-l"} border-border w-full flex-1 ${i !== RUNG_COUNT - 1 ? "border-b-2" : ""}`}
         style={{
-          backgroundImage: "repeating-linear-gradient(315deg, currentColor 0, currentColor 1px, transparent 0, transparent 50%)",
+          backgroundImage:
+            "repeating-linear-gradient(315deg, currentColor 0, currentColor 1px, transparent 0, transparent 50%)",
           backgroundSize: "7px 7px",
           backgroundAttachment: "fixed",
-          color: "rgba(0,0,0,0.08)",
+          color: "oklch(from var(--foreground) l c h / 0.08)",
         }}
-      >
-        {i !== RUNG_COUNT - 1 && (
-          <div
-            className={`absolute z-10 ${
-              side === "left"
-                ? "right-0 border-y-4 border-y-transparent border-r-4 border-r-border"
-                : "left-0 border-y-4 border-y-transparent border-l-4 border-l-border"
-            } bottom-[-4px]`}
-          />
-        )}
-      </div>
+      />
     ))}
   </div>
 );
@@ -52,14 +52,16 @@ function HeroButton() {
   return (
     <div className="relative w-fit group">
       <Button
-        type="submit"
+        asChild
         variant="outline"
         className="rounded-none cursor-pointer relative overflow-hidden focus-visible:ring-0 h-8 px-3 py-1 border-dashed"
       >
-        <span className="shine absolute -top-1/2 -left-full h-[200%] w-3/4 skew-x-[-20deg] bg-linear-to-r from-transparent via-white/50 to-transparent pointer-events-none" />
-        <GithubIcon className="size-4" />
-        Github
-        <ArrowRightIcon className="size-4 w-0 opacity-0 group-hover:w-4 group-hover:opacity-100 transition-all duration-200" />
+        <a href="https://github.com/sachigoyal/akira" target="_blank" rel="noopener noreferrer">
+          <span className="shine absolute -top-1/2 -left-full h-[200%] w-3/4 skew-x-[-20deg] bg-linear-to-r from-transparent via-white/50 to-transparent pointer-events-none" />
+          <GithubIcon className="size-4" />
+          Github
+          <ArrowRightIcon className="size-4 w-0 opacity-0 group-hover:w-4 group-hover:opacity-100 transition-all duration-200" />
+        </a>
       </Button>
       <span className="absolute h-2 w-2 border-foreground border-b border-r bottom-0 right-0" />
       <span className="absolute h-2 w-2 border-foreground border-b border-l bottom-0 left-0" />
@@ -70,15 +72,19 @@ function HeroButton() {
 }
 
 function HeroButton2() {
+  const { data: session } = useSession();
+
   return (
     <div className="relative w-fit group">
       <Button
-        type="submit"
+        asChild
         className="rounded-none cursor-pointer relative overflow-hidden focus-visible:ring-0 h-8 px-3 py-1"
       >
-        <span className="shine absolute -top-1/2 -left-full h-[200%] w-3/4 skew-x-[-20deg] bg-linear-to-r from-transparent via-white/50 to-transparent pointer-events-none" />
-        Get Akira
-        <ArrowRightIcon className="size-4 w-0 opacity-0 group-hover:w-4 group-hover:opacity-100 transition-all duration-200" />
+        <Link href={session ? "/docs" : "/signin"}>
+          <span className="shine absolute -top-1/2 -left-full h-[200%] w-3/4 skew-x-[-20deg] bg-linear-to-r from-transparent via-white/50 to-transparent pointer-events-none" />
+          Get Akira
+          <ArrowRightIcon className="size-4 w-0 opacity-0 group-hover:w-4 group-hover:opacity-100 transition-all duration-200" />
+        </Link>
       </Button>
       <span className="absolute h-2 w-2 border-foreground border-dashed border-b border-r bottom-0 right-0" />
       <span className="absolute h-2 w-2 border-foreground border-dashed border-b border-l bottom-0 left-0" />
@@ -102,7 +108,9 @@ function HeroBadge() {
   );
 }
 
-{/* ── Card 1: Auth ─────────────────────────────────────────── */}
+{
+  /* ── Card 1: Auth ─────────────────────────────────────────── */
+}
 function MicroHeroOne() {
   return (
     <motion.div
@@ -126,13 +134,17 @@ function MicroHeroOne() {
             default.
           </h2>
           <p className="text-muted-foreground text-[9px] leading-relaxed mt-2 max-w-[200px]">
-            Session-based auth with social logins, magic links,
-            and role-based access out of the box.
+            Session-based auth with social logins, magic links, and role-based
+            access out of the box.
           </p>
         </div>
 
         <span className="text-[9px] font-medium text-foreground flex items-center gap-1.5 group-hover:gap-2.5 transition-all duration-300 delay-[250ms]">
-          View docs <ArrowRight size={10} className="transition-transform duration-300 group-hover:translate-x-0.5" />
+          View docs{" "}
+          <ArrowRight
+            size={10}
+            className="transition-transform duration-300 group-hover:translate-x-0.5"
+          />
         </span>
       </div>
 
@@ -168,7 +180,9 @@ function MicroHeroOne() {
   );
 }
 
-{/* ── Card 2: Payments ───────────────────────────────────────── */}
+{
+  /* ── Card 2: Payments ───────────────────────────────────────── */
+}
 function MicroHeroTwo() {
   return (
     <motion.div
@@ -191,7 +205,8 @@ function MicroHeroTwo() {
             globally.
           </h2>
           <p className="text-muted-foreground text-[9px] leading-relaxed mt-2 max-w-[220px]">
-            Subscriptions, one-time payments, and usage-based billing with zero config.
+            Subscriptions, one-time payments, and usage-based billing with zero
+            config.
           </p>
         </div>
       </div>
@@ -217,8 +232,15 @@ function MicroHeroTwo() {
                 className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono"
                 style={{ transitionDelay: `${150 + i * 70}ms` }}
               >
-                <span className="text-[8px] text-foreground/40 group-hover:text-foreground/90 transition-colors duration-300" style={{ transitionDelay: `${150 + i * 70}ms` }}>{name}</span>
-                <span className="text-[8px] text-foreground font-medium">{price}</span>
+                <span
+                  className="text-[8px] text-foreground/40 group-hover:text-foreground/90 transition-colors duration-300"
+                  style={{ transitionDelay: `${150 + i * 70}ms` }}
+                >
+                  {name}
+                </span>
+                <span className="text-[8px] text-foreground font-medium">
+                  {price}
+                </span>
               </div>
               {i < 2 && <div className="w-px h-3 bg-border/20" />}
             </div>
@@ -226,7 +248,11 @@ function MicroHeroTwo() {
         </div>
 
         <span className="text-[9px] font-medium text-foreground flex items-center gap-1.5 group-hover:gap-2.5 transition-all duration-300 delay-[300ms]">
-          Integrate <ArrowRight size={10} className="transition-transform duration-300 group-hover:translate-x-0.5" />
+          Integrate{" "}
+          <ArrowRight
+            size={10}
+            className="transition-transform duration-300 group-hover:translate-x-0.5"
+          />
         </span>
       </div>
 
@@ -239,7 +265,9 @@ function MicroHeroTwo() {
   );
 }
 
-{/* ── Card 3: Database ────────────────────────────────────────── */}
+{
+  /* ── Card 3: Database ────────────────────────────────────────── */
+}
 function MicroHeroThree() {
   const schemaRows = [
     { field: "id", type: "uuid", key: "PK" },
@@ -312,8 +340,9 @@ function MicroHeroThree() {
 export default function Home() {
   return (
     <div className="w-full h-screen flex flex-col mx-auto max-w-7xl border-x">
-      <nav className="relative px-4 py-4">
-        Akira
+      <nav className="relative px-4 py-4 flex items-center justify-between">
+        <span>Akira</span>
+        <UserDropdown />
         <div className="z-10 absolute bottom-0 left-0 -translate-x-1/2 translate-y-1/2 size-2.5 rounded-full border border-border bg-background" />
         <div className="z-10 absolute bottom-0 right-0 translate-x-1/2 translate-y-1/2 size-2.5 rounded-full border border-border bg-background" />
         <div className="border-b absolute bottom-0 left-1/2 -translate-x-1/2 w-screen" />
@@ -321,7 +350,7 @@ export default function Home() {
       <section className="relative flex flex-1">
         <Ladder side="left" />
         <Ladder side="right" />
-        <div className="flex-1 flex flex-col font-(family-name:--font-geist-pixel-square) ">
+        <div className="flex-1 flex flex-col font-pixel-square ">
           <div className="flex-1 flex flex-col items-start justify-center px-8">
             <div className="flex items-center gap-2 mb-4">
               <HeroBadge />
@@ -347,7 +376,40 @@ export default function Home() {
           <MicroHeroThree />
         </div>
       </section>
-      <footer className="relative px-4 py-4">
+      <footer className="relative px-4 py-4 font-pixel-square">
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-muted-foreground ">
+            built by{" "}
+            <a
+              href="https://sachi.dev"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-4 hover:text-foreground transition-colors"
+            >
+              sachi
+            </a>
+          </span>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <a
+              href="https://github.com/sachigoyal"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-foreground hover:underline underline-offset-4 transition-colors"
+            >
+              github
+            </a>
+            <span className="text-3xl leading-none">·</span>
+            <a
+              href="https://x.com/sachigoyal27"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-foreground hover:underline underline-offset-4 transition-colors"
+            >
+              x
+            </a>
+          </div>
+          <ModeToggle />
+        </div>
         <div className="z-10 absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 size-2.5 rounded-full border border-border bg-background" />
         <div className="z-10 absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 size-2.5 rounded-full border border-border bg-background" />
         <div className="border-t absolute top-0 left-1/2 -translate-x-1/2 w-screen" />

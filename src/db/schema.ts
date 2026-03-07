@@ -4,7 +4,6 @@ import {
   text,
   timestamp,
   boolean,
-  integer,
   index,
 } from "drizzle-orm/pg-core";
 
@@ -80,27 +79,9 @@ export const verification = pgTable(
   (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
 
-export const payment = pgTable(
-  "payment",
-  {
-    paymentId: text("payment_id").primaryKey(),
-    userId: text("user_id").references(() => user.id, { onDelete: "set null" }),
-    customerEmail: text("customer_email").notNull(),
-    amount: integer("amount").notNull(),
-    currency: text("currency").notNull(),
-    productId: text("product_id").notNull(),
-    createdAt: timestamp("created_at").notNull(),
-  },
-  (table) => [
-    index("payment_userId_idx").on(table.userId),
-    index("payment_customerEmail_idx").on(table.customerEmail),
-  ],
-);
-
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
   accounts: many(account),
-  payments: many(payment),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -117,9 +98,3 @@ export const accountRelations = relations(account, ({ one }) => ({
   }),
 }));
 
-export const paymentRelations = relations(payment, ({ one }) => ({
-  user: one(user, {
-    fields: [payment.userId],
-    references: [user.id],
-  }),
-}));
