@@ -19,7 +19,7 @@ const RUNG_COUNT = 10;
 
 const Ladder = ({ side }: { side: "left" | "right" }) => (
   <div
-    className="absolute top-0 bottom-0 flex flex-col"
+    className="pointer-events-none absolute top-0 bottom-0 hidden xl:flex flex-col"
     style={
       side === "left"
         ? {
@@ -123,7 +123,7 @@ function MicroHeroOne() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="w-[380px] h-[214px] border border-border relative cursor-pointer group overflow-hidden"
+      className="relative h-[214px] w-full max-w-[380px] overflow-hidden border border-border cursor-pointer group"
     >
       {/* shine sweep */}
       <span className="shine absolute -top-1/2 -left-full h-[200%] w-3/4 skew-x-[-20deg] bg-linear-to-r from-transparent via-white/40 to-transparent pointer-events-none z-20" />
@@ -195,7 +195,7 @@ function MicroHeroTwo() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut", delay: 0.1 }}
-      className="w-[380px] h-[214px] border border-border relative cursor-pointer group overflow-hidden"
+      className="relative h-[214px] w-full max-w-[380px] overflow-hidden border border-border cursor-pointer group"
     >
       <span className="shine absolute -top-1/2 -left-full h-[200%] w-3/4 skew-x-[-20deg] bg-linear-to-r from-transparent via-white/40 to-transparent pointer-events-none z-20" />
 
@@ -253,7 +253,7 @@ function MicroHeroTwo() {
           ))}
         </div>
 
-        <span className="text-[9px] font-medium text-foreground flex items-center gap-1.5 group-hover:gap-2.5 transition-all duration-300 delay-[300ms]">
+        <span className="text-[9px] font-medium text-foreground flex items-center gap-1.5 group-hover:gap-2.5 transition-all duration-300 delay-300">
           Integrate{" "}
           <ArrowRight
             size={10}
@@ -287,7 +287,7 @@ function MicroHeroThree() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
-      className="w-[380px] h-[214px] border border-border relative cursor-pointer group overflow-hidden"
+      className="relative h-[214px] w-full max-w-[380px] overflow-hidden border border-border cursor-pointer group"
     >
       <span className="shine absolute -top-1/2 -left-full h-[200%] w-3/4 skew-x-[-20deg] bg-linear-to-r from-transparent via-white/40 to-transparent pointer-events-none z-20" />
 
@@ -329,7 +329,7 @@ function MicroHeroThree() {
 
       {/* bottom CTA */}
       <div className="absolute bottom-0 left-0 right-0 h-[36px] flex items-center px-5">
-        <span className="ml-auto text-[9px] font-medium text-foreground flex items-center gap-1.5 group-hover:gap-2.5 transition-all duration-300 delay-[300ms]">
+        <span className="ml-auto text-[9px] font-medium text-foreground flex items-center gap-1.5 group-hover:gap-2.5 transition-all duration-300 delay-300">
           Explore <ArrowUpRight size={10} className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
         </span>
       </div>
@@ -345,40 +345,42 @@ function MicroHeroThree() {
 
 export default function Home() {
   return (
-    <div className="w-full h-screen flex flex-col mx-auto max-w-7xl border-x">
-      <nav className="relative px-4 py-4 flex items-center justify-between">
+    <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col border-x">
+      <nav className="relative flex items-center justify-between px-4 py-4 sm:px-6">
         <span>Akira</span>
         <UserDropdown />
         <div className="z-10 absolute bottom-0 left-0 -translate-x-1/2 translate-y-1/2 size-2.5 rounded-full border border-border bg-background" />
         <div className="z-10 absolute bottom-0 right-0 translate-x-1/2 translate-y-1/2 size-2.5 rounded-full border border-border bg-background" />
         <div className="border-b absolute bottom-0 left-1/2 -translate-x-1/2 w-screen" />
       </nav>
-      <section className="relative flex flex-1">
+      <section className="relative flex flex-1 flex-col md:min-h-0 md:flex-row">
         <Ladder side="left" />
         <Ladder side="right" />
-        <div className="flex-1 flex flex-col font-pixel-square ">
-          <div className="flex-1 flex flex-col items-start justify-center px-8">
+        <div className="flex min-w-0 flex-1 flex-col font-pixel-square">
+          <div className="flex flex-1 flex-col items-start justify-center px-5 py-12 sm:px-8 sm:py-16 lg:px-10 xl:px-12">
             <div className="flex items-center gap-2 mb-4">
               <HeroBadge />
             </div>
-            <h1 className="text-5xl">Akira</h1>
-            <p className="text-base text-muted-foreground mt-3 max-w-lg leading-relaxed">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl">Akira</h1>
+            <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
               A modern starter with Next.js, Tailwind, ShadCN/ui, Motion, Drizzle, Postgres,
               Auth, Dodo Payments, Resend.
             </p>
-            <div className="mt-4 flex items-center gap-4">
+            <div className="mt-6 flex flex-wrap items-center gap-3 sm:gap-4">
               <HeroButton />
               <HeroButton2 />
             </div>
           </div>
-          <div className="flex-1 border-t border-border relative">
+          <div className="relative border-t border-border">
             <TechGrid />
           </div>
         </div>
-        <div className="flex-1 border-l border-border flex flex-col items-center justify-center gap-6 overflow-y-auto py-6 font-sans">
-          <MicroHeroOne />
-          <MicroHeroTwo />
-          <MicroHeroThree />
+        <div className="hidden border-border font-sans lg:flex lg:w-[400px] lg:flex-none lg:flex-col lg:items-center lg:justify-center lg:border-l lg:px-5 lg:py-6 xl:w-auto xl:flex-1 xl:px-6">
+          <div className="flex w-full flex-col items-center gap-6 lg:overflow-y-auto lg:py-6">
+            <MicroHeroOne />
+            <MicroHeroTwo />
+            <MicroHeroThree />
+          </div>
         </div>
       </section>
       <footer className="relative px-4 py-4 font-pixel-square">
