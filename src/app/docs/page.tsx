@@ -28,9 +28,8 @@ function CodeBlock({ code, ref }: { code: string; ref?: React.Ref<HTMLDivElement
   return (
     <div
       ref={ref}
-      className={`flex items-center justify-between gap-2 bg-muted border border-dashed px-3 py-2 font-mono text-xs hover:border-foreground/30 transition-colors ${
-        flash ? "border-foreground/50" : "border-border"
-      }`}
+      className={`flex items-center justify-between gap-2 bg-muted border border-dashed px-3 py-2 font-mono text-xs hover:border-foreground/30 transition-colors ${flash ? "border-foreground/50" : "border-border"
+        }`}
     >
       <code className="text-foreground truncate">{code}</code>
       <button
@@ -141,11 +140,10 @@ function InstallCard({ codeBlockRef }: { codeBlockRef?: React.Ref<HTMLDivElement
             <button
               key={p}
               onClick={() => setPm(p)}
-              className={`text-[10px] font-mono pb-0.5 cursor-pointer transition-all duration-200 ${
-                pm === p
-                  ? "text-foreground border-b-2 border-foreground"
-                  : "text-muted-foreground hover:text-foreground border-b-2 border-transparent"
-              }`}
+              className={`text-[10px] font-mono pb-0.5 cursor-pointer transition-all duration-200 ${pm === p
+                ? "text-foreground border-b-2 border-foreground"
+                : "text-muted-foreground hover:text-foreground border-b-2 border-transparent"
+                }`}
             >
               {p}
             </button>
@@ -275,7 +273,7 @@ function GridConnectors({
   if (lines.length === 0) return null;
 
   return (
-    <svg className="absolute inset-0 z-10 pointer-events-none overflow-visible" width="100%" height="100%">
+    <svg className="absolute inset-0 z-10 pointer-events-none overflow-visible hidden md:block" width="100%" height="100%">
       {lines.map((l, i) => (
         <g key={i}>
           <line
@@ -330,7 +328,7 @@ export default function DocsPage() {
           </div>
 
           {/* 2x2 Grid with connectors */}
-          <div ref={gridRef} className="grid grid-cols-2 grid-rows-[1fr_1fr] gap-[1px] bg-border border border-border relative">
+          <div ref={gridRef} className="grid grid-cols-1 md:grid-cols-2 grid-rows-[1fr_1fr] gap-px bg-border border border-border relative">
             <StepCard index={0} label="Clone" title="Clone the repo" centered>
               <CodeBlock ref={ref0} code="git clone https://github.com/sachigoyal/akira" />
             </StepCard>

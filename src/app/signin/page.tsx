@@ -58,15 +58,14 @@ export default function SignInPage() {
           return (
             <div
               key={i}
-              className="border border-border"
+              className="hidden border border-border md:block"
               style={{ ...cellStyle, gridColumn: col + 1, gridRow: row + 1 }}
             />
           );
         })}
         {/* Card spanning inner area */}
         <div
-          className="bg-background border border-border grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-dashed divide-border"
-          style={{ gridColumn: "2 / 8", gridRow: "2 / 8" }}
+          className="col-[1/9] row-[1/9] bg-background grid grid-cols-1 divide-y divide-dashed divide-border border-0 md:col-[2/8] md:row-[2/8] md:border md:border-border lg:grid-cols-2 lg:divide-y-0 lg:divide-x"
         >
           <SignIn onProviderClick={() => setPartyTrigger((p) => p + 1)} />
           <InteractiveCat externalPartyTrigger={partyTrigger} />
