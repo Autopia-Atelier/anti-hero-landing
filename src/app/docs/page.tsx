@@ -299,7 +299,7 @@ export default function DocsPage() {
   const nodeRefs = [ref0, ref1, ref2, ref3] as const;
 
   return (
-    <div className="w-full h-screen flex flex-col mx-auto max-w-7xl border-x">
+    <div className="w-full h-screen overflow-hidden flex flex-col mx-auto max-w-7xl border-x">
       {/* Nav */}
       <nav className="relative px-4 py-4 font-pixel-square flex items-center justify-between">
         <a href="/" className="hover:opacity-80 transition-opacity">

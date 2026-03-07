@@ -18,24 +18,11 @@ import Link from "next/link";
 const RUNG_COUNT = 10;
 
 const Ladder = ({ side }: { side: "left" | "right" }) => (
-  <div
-    className="pointer-events-none absolute top-0 bottom-0 hidden xl:flex flex-col"
-    style={
-      side === "left"
-        ? {
-          right: "calc(100% + (100vw - 100%) / 4 - 5.5rem)",
-          left: "calc(-1 * (100vw - 100%) / 2)",
-        }
-        : {
-          left: "calc(100% + (100vw - 100%) / 4 - 5.5rem)",
-          right: "calc(-1 * (100vw - 100%) / 2)",
-        }
-    }
-  >
+  <div className="flex h-full w-full flex-col">
     {Array.from({ length: RUNG_COUNT }).map((_, i) => (
       <div
         key={i}
-        className={`relative ${side === "left" ? "border-r" : "border-l"} border-border w-full flex-1 ${i !== RUNG_COUNT - 1 ? "border-b-2" : ""}`}
+        className={`relative w-full flex-1 ${side === "left" ? "border-r" : "border-l"} ${i !== RUNG_COUNT - 1 ? "border-b-2" : ""}`}
         style={{
           backgroundImage:
             "repeating-linear-gradient(315deg, currentColor 0, currentColor 1px, transparent 0, transparent 50%)",
@@ -345,82 +332,96 @@ function MicroHeroThree() {
 
 export default function Home() {
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col border-x">
-      <nav className="relative flex items-center justify-between px-4 py-4 sm:px-6">
-        <span>Akira</span>
-        <UserDropdown />
-        <div className="z-10 absolute bottom-0 left-0 -translate-x-1/2 translate-y-1/2 size-2.5 rounded-full border border-border bg-background" />
-        <div className="z-10 absolute bottom-0 right-0 translate-x-1/2 translate-y-1/2 size-2.5 rounded-full border border-border bg-background" />
-        <div className="border-b absolute bottom-0 left-1/2 -translate-x-1/2 w-screen" />
-      </nav>
-      <section className="relative flex flex-1 flex-col md:min-h-0 md:flex-row">
-        <Ladder side="left" />
-        <Ladder side="right" />
-        <div className="flex min-w-0 flex-1 flex-col font-pixel-square">
-          <div className="flex flex-1 flex-col items-start justify-center px-5 py-12 sm:px-8 sm:py-16 lg:px-10 xl:px-12">
-            <div className="flex items-center gap-2 mb-4">
-              <HeroBadge />
+    <div className="flex h-screen w-full flex-col overflow-hidden">
+      <div className="mx-auto flex w-full max-w-7xl min-w-0 flex-col border-x">
+        <nav className="relative flex h-(--nav-height) items-center justify-between px-4 sm:px-6">
+          <Link href="/" className="font-pixel-square">Akira</Link>
+          <UserDropdown />
+          <div className="z-10 absolute bottom-0 left-0 -translate-x-1/2 translate-y-1/2 size-2.5 rounded-full border border-border bg-background" />
+          <div className="z-10 absolute bottom-0 right-0 translate-x-1/2 translate-y-1/2 size-2.5 rounded-full border border-border bg-background" />
+          <div className="border-b absolute bottom-0 left-1/2 -translate-x-1/2 w-screen" />
+        </nav>
+      </div>
+
+      <div className="min-h-[calc(100vh-var(--nav-height)-var(--footer-height))] flex-1 w-full xl:grid xl:grid-cols-[minmax(0,1fr)_minmax(0,80rem)_minmax(0,1fr)]">
+        <aside className="pointer-events-none hidden xl:flex pr-[20%]">
+          <Ladder side="left" />
+        </aside>
+
+        <section className="mx-auto flex w-full max-w-7xl min-w-0 flex-1 flex-col border-x md:min-h-0 md:flex-row">
+          <div className="flex min-w-0 flex-1 flex-col font-pixel-square">
+            <div className="flex flex-1 flex-col items-start justify-center px-5 py-12 sm:px-8 sm:py-16 lg:px-10 xl:px-12">
+              <div className="flex items-center gap-2 mb-4">
+                <HeroBadge />
+              </div>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl">Akira</h1>
+              <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+                A modern starter with Next.js, Tailwind, ShadCN/ui, Motion, Drizzle, Postgres,
+                Auth, Dodo Payments, Resend.
+              </p>
+              <div className="mt-6 flex flex-wrap items-center gap-3 sm:gap-4">
+                <HeroButton />
+                <HeroButton2 />
+              </div>
             </div>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl">Akira</h1>
-            <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-              A modern starter with Next.js, Tailwind, ShadCN/ui, Motion, Drizzle, Postgres,
-              Auth, Dodo Payments, Resend.
-            </p>
-            <div className="mt-6 flex flex-wrap items-center gap-3 sm:gap-4">
-              <HeroButton />
-              <HeroButton2 />
+            <div className="relative flex-1 border-t border-border">
+              <TechGrid />
             </div>
           </div>
-          <div className="relative border-t border-border">
-            <TechGrid />
+          <div className="hidden border-border font-sans lg:flex lg:w-[400px] lg:flex-none lg:flex-col lg:items-center lg:justify-center lg:border-l lg:px-5 lg:py-6 xl:w-auto xl:flex-1 xl:px-6">
+            <div className="flex w-full flex-col items-center gap-6 lg:overflow-y-auto lg:py-6">
+              <MicroHeroOne />
+              <MicroHeroTwo />
+              <MicroHeroThree />
+            </div>
           </div>
-        </div>
-        <div className="hidden border-border font-sans lg:flex lg:w-[400px] lg:flex-none lg:flex-col lg:items-center lg:justify-center lg:border-l lg:px-5 lg:py-6 xl:w-auto xl:flex-1 xl:px-6">
-          <div className="flex w-full flex-col items-center gap-6 lg:overflow-y-auto lg:py-6">
-            <MicroHeroOne />
-            <MicroHeroTwo />
-            <MicroHeroThree />
+        </section>
+
+        <aside className="pointer-events-none hidden xl:flex pl-[20%]">
+          <Ladder side="right" />
+        </aside>
+      </div>
+
+      <div className="mx-auto flex w-full max-w-7xl min-w-0 flex-col border-x">
+        <footer className="relative h-(--footer-height) px-4 font-pixel-square">
+          <div className="flex h-full items-center justify-between">
+            <span className="text-sm text-muted-foreground ">
+              built by{" "}
+              <a
+                href="https://sachi.dev"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-4 hover:text-foreground transition-colors"
+              >
+                sachi
+              </a>
+            </span>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <a
+                href="https://github.com/sachigoyal"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-foreground hover:underline underline-offset-4 transition-colors"
+              >
+                github
+              </a>
+              <span className="text-3xl leading-none">·</span>
+              <a
+                href="https://x.com/sachigoyal27"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-foreground hover:underline underline-offset-4 transition-colors"
+              >
+                x
+              </a>
+            </div>
+            <ModeToggle />
           </div>
-        </div>
-      </section>
-      <footer className="relative px-4 py-4 font-pixel-square">
-        <div className="flex items-center justify-between">
-          <span className="text-sm text-muted-foreground ">
-            built by{" "}
-            <a
-              href="https://sachi.dev"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline underline-offset-4 hover:text-foreground transition-colors"
-            >
-              sachi
-            </a>
-          </span>
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <a
-              href="https://github.com/sachigoyal"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-foreground hover:underline underline-offset-4 transition-colors"
-            >
-              github
-            </a>
-            <span className="text-3xl leading-none">·</span>
-            <a
-              href="https://x.com/sachigoyal27"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-foreground hover:underline underline-offset-4 transition-colors"
-            >
-              x
-            </a>
-          </div>
-          <ModeToggle />
-        </div>
-        <div className="z-10 absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 size-2.5 rounded-full border border-border bg-background" />
-        <div className="z-10 absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 size-2.5 rounded-full border border-border bg-background" />
-        <div className="border-t absolute top-0 left-1/2 -translate-x-1/2 w-screen" />
-      </footer>
+          <div className="z-10 absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 size-2.5 rounded-full border border-border bg-background" />
+          <div className="z-10 absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 size-2.5 rounded-full border border-border bg-background" />
+          <div className="border-t absolute top-0 left-1/2 -translate-x-1/2 w-screen" />
+        </footer>
+      </div>
     </div>
   );
 }
