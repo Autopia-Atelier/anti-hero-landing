@@ -348,7 +348,7 @@ export default function Home() {
           <Ladder side="left" />
         </aside>
 
-        <section className="mx-auto flex w-full max-w-7xl min-w-0 flex-1 flex-col border-x md:min-h-0 md:flex-row">
+        <section className="mx-auto flex w-full h-full max-w-7xl min-w-0 flex-1 flex-col border-x md:min-h-0 md:flex-row">
           <div className="flex min-w-0 flex-1 flex-col font-pixel-square">
             <div className="flex flex-1 flex-col items-start justify-center px-5 py-12 sm:px-8 sm:py-16 lg:px-10 xl:px-12">
               <div className="flex items-center gap-2 mb-4">
