@@ -29,7 +29,6 @@ const stack: { name: string; desc: string; href: string; icon: LucideIcon }[] = 
 ];
 
 const COLS = 5;
-const ROWS = 2;
 
 export function TechGrid() {
   return (

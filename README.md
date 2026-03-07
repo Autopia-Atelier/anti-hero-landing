@@ -2,6 +2,8 @@
 
 A modern SaaS starter kit built with Next.js, Tailwind CSS, and shadcn/ui. Auth, payments, database, and email — all pre-configured so you can skip the setup and start building.
 
+![Akira](./public/og.png)
+
 ## Stack
 
 - **Framework:** [Next.js](https://nextjs.org) (App Router)

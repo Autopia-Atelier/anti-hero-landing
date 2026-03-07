@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "motion/react";
+import { useState, useRef, useEffect } from "react";
 import { Copy, Check, ArrowRight, ArrowRightIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ModeToggle from "@/components/mode-toggle/mode-toggle";
@@ -23,11 +22,12 @@ function CopyButton({ text }: { text: string }) {
   );
 }
 
-function CodeBlock({ code }: { code: string }) {
+function CodeBlock({ code, ref }: { code: string; ref?: React.Ref<HTMLDivElement> }) {
   const [flash, setFlash] = useState(false);
 
   return (
     <div
+      ref={ref}
       className={`flex items-center justify-between gap-2 bg-muted border border-dashed px-3 py-2 font-mono text-xs hover:border-foreground/30 transition-colors ${
         flash ? "border-foreground/50" : "border-border"
       }`}
@@ -64,62 +64,63 @@ function ShineSweep() {
   );
 }
 
-function CircleDot() {
-  return (
-    <div className="size-2 rounded-full border border-border bg-background shrink-0" />
-  );
-}
-
 function StepCard({
   index,
   label,
   title,
   children,
+  centered,
+  topExtra,
+  bottomExtra,
 }: {
   index: number;
   label: string;
   title: string;
   children: React.ReactNode;
+  centered?: boolean;
+  topExtra?: React.ReactNode;
+  bottomExtra?: React.ReactNode;
 }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: "easeOut", delay: index * 0.1 }}
-      className="bg-background border border-border relative group overflow-hidden flex flex-col transition-all duration-300 group-hover:-translate-y-0.5 group-hover:shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:group-hover:shadow-[0_2px_8px_rgba(255,255,255,0.02)]"
+    <div
+      className="bg-background relative group overflow-hidden flex flex-col transition-all duration-300 group-hover:-translate-y-0.5 group-hover:shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:group-hover:shadow-[0_2px_8px_rgba(255,255,255,0.02)]"
     >
       {/* Step number indicator */}
-      <motion.div
-        initial={{ scale: 0 }}
-        animate={{ scale: [0, 1.2, 1] }}
-        transition={{
-          duration: 0.4,
-          ease: "easeOut",
-          delay: 0.3 + index * 0.1,
-        }}
+      <div
         className="absolute top-2 right-2 size-5 rounded-full border border-border bg-background text-[8px] flex items-center justify-center font-mono z-10"
       >
         {index + 1}
-      </motion.div>
-      <div className="p-4 flex flex-col flex-1">
-        <span className="text-[8px] uppercase tracking-[0.2em] text-muted-foreground">
+      </div>
+      {/* Header — absolute so it doesn't push centered content */}
+      <div className="absolute top-0 left-0 right-0 px-4 pt-0.5 pointer-events-none z-[1]">
+        <span className="text-[8px] font-mono text-muted-foreground">
           Step {index + 1} — {label}
         </span>
-        <h2 className="text-sm font-pixel-square tracking-tight text-foreground mt-1.5 mb-0">
+        <h2 className="text-sm font-pixel-square tracking-tight text-foreground -mt-0.5 mb-0">
           {title}
         </h2>
-        {/* Dashed divider */}
-        <div className="border-t border-dashed border-border/40 my-2" />
-        <div className="flex-1 flex flex-col justify-center gap-2">
-          {children}
-        </div>
       </div>
+      {centered ? (
+        <div className="p-4 pt-10 flex-1 grid grid-rows-[1fr_auto_1fr]">
+          <div className="flex flex-col justify-end">{topExtra}</div>
+          <div className="flex flex-col gap-2">{children}</div>
+          {bottomExtra && (
+            <div className="self-start mt-2">{bottomExtra}</div>
+          )}
+        </div>
+      ) : (
+        <div className="p-4 pt-10 flex flex-col flex-1">
+          <div className="flex-1 flex flex-col justify-center gap-2">
+            {children}
+          </div>
+        </div>
+      )}
       <CornerBrackets />
-    </motion.div>
+    </div>
   );
 }
 
-function InstallCard() {
+function InstallCard({ codeBlockRef }: { codeBlockRef?: React.Ref<HTMLDivElement> }) {
   const [pm, setPm] = useState<"bun" | "npm" | "pnpm" | "yarn">("bun");
   const commands = {
     bun: "bun install",
@@ -129,28 +130,35 @@ function InstallCard() {
   };
 
   return (
-    <StepCard index={1} label="Install" title="Install dependencies">
-      <div className="flex gap-3 mb-1">
-        {(["bun", "npm", "pnpm", "yarn"] as const).map((p) => (
-          <button
-            key={p}
-            onClick={() => setPm(p)}
-            className={`text-[10px] font-mono pb-0.5 cursor-pointer transition-all duration-200 ${
-              pm === p
-                ? "text-foreground border-b-2 border-foreground"
-                : "text-muted-foreground hover:text-foreground border-b-2 border-transparent"
-            }`}
-          >
-            {p}
-          </button>
-        ))}
-      </div>
-      <CodeBlock code={commands[pm]} />
+    <StepCard
+      index={1}
+      label="Install"
+      title="Install dependencies"
+      centered
+      topExtra={
+        <div className="flex gap-3 mb-1">
+          {(["bun", "npm", "pnpm", "yarn"] as const).map((p) => (
+            <button
+              key={p}
+              onClick={() => setPm(p)}
+              className={`text-[10px] font-mono pb-0.5 cursor-pointer transition-all duration-200 ${
+                pm === p
+                  ? "text-foreground border-b-2 border-foreground"
+                  : "text-muted-foreground hover:text-foreground border-b-2 border-transparent"
+              }`}
+            >
+              {p}
+            </button>
+          ))}
+        </div>
+      }
+    >
+      <CodeBlock ref={codeBlockRef} code={commands[pm]} />
     </StepCard>
   );
 }
 
-function ConfigureCard() {
+function ConfigureCard({ codeBlockRef }: { codeBlockRef?: React.Ref<HTMLDivElement> }) {
   const vars = [
     "DATABASE_URL",
     "BETTER_AUTH_SECRET",
@@ -160,7 +168,7 @@ function ConfigureCard() {
 
   return (
     <StepCard index={2} label="Configure" title="Set up environment">
-      <div className="border border-border divide-y divide-border mb-2">
+      <div className="border border-border divide-y divide-border mt-1 mb-0.5">
         {vars.map((v, i) => (
           <div
             key={v}
@@ -171,16 +179,19 @@ function ConfigureCard() {
           </div>
         ))}
       </div>
-      <CodeBlock code="cp .env.example .env" />
+      <CodeBlock ref={codeBlockRef} code="cp .env.example .env" />
     </StepCard>
   );
 }
 
-function LaunchCard() {
+function LaunchCard({ codeBlockRef }: { codeBlockRef?: React.Ref<HTMLDivElement> }) {
   return (
-    <StepCard index={3} label="Launch" title="You're ready">
-      <CodeBlock code="bun dev" />
-      <div className="mt-1">
+    <StepCard
+      index={3}
+      label="Launch"
+      title="You're ready"
+      centered
+      bottomExtra={
         <a href="/" className="relative w-fit group/cta inline-block">
           <Button
             variant="outline"
@@ -197,52 +208,98 @@ function LaunchCard() {
           <span className="absolute h-2.5 w-2.5 border-foreground/30 group-hover/cta:border-foreground border-t border-r top-0 right-0 transition-colors duration-300" />
           <span className="absolute h-2.5 w-2.5 border-foreground/30 group-hover/cta:border-foreground border-t border-l top-0 left-0 transition-colors duration-300" />
         </a>
-      </div>
+      }
+    >
+      <CodeBlock ref={codeBlockRef} code="bun dev" />
     </StepCard>
   );
 }
 
-function GridConnectors() {
+type Rect = { left: number; top: number; right: number; bottom: number; cx: number; cy: number };
+
+function getRect(el: HTMLElement, container: HTMLElement): Rect {
+  const er = el.getBoundingClientRect();
+  const cr = container.getBoundingClientRect();
+  const left = er.left - cr.left;
+  const top = er.top - cr.top;
+  const right = left + er.width;
+  const bottom = top + er.height;
+  return { left, top, right, bottom, cx: (left + right) / 2, cy: (top + bottom) / 2 };
+}
+
+function GridConnectors({
+  containerRef,
+  refs,
+}: {
+  containerRef: React.RefObject<HTMLDivElement | null>;
+  refs: readonly [
+    React.RefObject<HTMLDivElement | null>,
+    React.RefObject<HTMLDivElement | null>,
+    React.RefObject<HTMLDivElement | null>,
+    React.RefObject<HTMLDivElement | null>,
+  ];
+}) {
+  const [lines, setLines] = useState<{ x1: number; y1: number; x2: number; y2: number }[]>([]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const update = () => {
+      const els = refs.map((r) => r.current);
+      if (els.some((el) => !el)) return;
+      const rects = els.map((el) => getRect(el!, container));
+
+      // Connections: 0→1 and 2→3 only
+      setLines([
+        { x1: rects[0].right, y1: rects[0].cy, x2: rects[1].left, y2: rects[1].cy },
+        { x1: rects[2].right, y1: rects[2].cy, x2: rects[3].left, y2: rects[3].cy },
+      ]);
+    };
+
+    requestAnimationFrame(update);
+
+    const ro = new ResizeObserver(update);
+    ro.observe(container);
+    refs.forEach((ref) => {
+      if (ref.current) ro.observe(ref.current);
+    });
+    window.addEventListener("resize", update);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", update);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (lines.length === 0) return null;
+
   return (
-    <>
-      {/* Horizontal line: row 1, between col 1 and col 2 */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center z-10">
-        <CircleDot />
-        <div className="w-8 border-t border-dashed border-border" />
-        <CircleDot />
-      </div>
-      {/* Horizontal line: row 2, between col 1 and col 2 */}
-      <div className="absolute top-3/4 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center z-10">
-        <CircleDot />
-        <div className="w-8 border-t border-dashed border-border" />
-        <CircleDot />
-      </div>
-      {/* Vertical line: col 1, between row 1 and row 2 */}
-      <div className="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center z-10">
-        <CircleDot />
-        <div className="h-8 border-l border-dashed border-border" />
-        <CircleDot />
-      </div>
-      {/* Vertical line: col 2, between row 1 and row 2 */}
-      <div className="absolute top-1/2 left-3/4 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center z-10">
-        <CircleDot />
-        <div className="h-8 border-l border-dashed border-border" />
-        <CircleDot />
-      </div>
-      {/* Center intersection dot */}
-      <motion.div
-        initial={{ scale: 0 }}
-        animate={{ scale: [0, 1.3, 1] }}
-        transition={{ duration: 0.5, ease: "easeOut", delay: 0.6 }}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20"
-      >
-        <CircleDot />
-      </motion.div>
-    </>
+    <svg className="absolute inset-0 z-10 pointer-events-none overflow-visible" width="100%" height="100%">
+      {lines.map((l, i) => (
+        <g key={i}>
+          <line
+            x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2}
+            stroke="var(--border)"
+            strokeWidth={1}
+            strokeDasharray="4 3"
+          />
+          <circle cx={l.x1} cy={l.y1} r={4} fill="var(--background)" stroke="var(--border)" strokeWidth={1} />
+          <circle cx={l.x2} cy={l.y2} r={4} fill="var(--background)" stroke="var(--border)" strokeWidth={1} />
+        </g>
+      ))}
+    </svg>
   );
 }
 
 export default function DocsPage() {
+  const gridRef = useRef<HTMLDivElement>(null);
+  const ref0 = useRef<HTMLDivElement>(null);
+  const ref1 = useRef<HTMLDivElement>(null);
+  const ref2 = useRef<HTMLDivElement>(null);
+  const ref3 = useRef<HTMLDivElement>(null);
+  const nodeRefs = [ref0, ref1, ref2, ref3] as const;
+
   return (
     <div className="w-full h-screen flex flex-col mx-auto max-w-7xl border-x">
       {/* Nav */}
@@ -261,10 +318,7 @@ export default function DocsPage() {
       {/* Main */}
       <main className="flex-1 flex items-center justify-center px-6 overflow-hidden">
         <div className="w-full max-w-5xl">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
+          <div
             className="text-center mb-8"
           >
             <span className="text-[8px] uppercase tracking-[0.2em] text-muted-foreground">
@@ -273,21 +327,21 @@ export default function DocsPage() {
             <h1 className="text-2xl font-pixel-square mt-1">
               Set up in 4 steps
             </h1>
-          </motion.div>
+          </div>
 
           {/* 2x2 Grid with connectors */}
-          <div className="grid grid-cols-2 grid-rows-[1fr_1fr] gap-[1px] bg-border relative">
-            <StepCard index={0} label="Clone" title="Clone the repo">
-              <CodeBlock code="git clone https://github.com/sachigoyal/akira" />
+          <div ref={gridRef} className="grid grid-cols-2 grid-rows-[1fr_1fr] gap-[1px] bg-border border border-border relative">
+            <StepCard index={0} label="Clone" title="Clone the repo" centered>
+              <CodeBlock ref={ref0} code="git clone https://github.com/sachigoyal/akira" />
             </StepCard>
 
-            <InstallCard />
+            <InstallCard codeBlockRef={ref1} />
 
-            <ConfigureCard />
+            <ConfigureCard codeBlockRef={ref2} />
 
-            <LaunchCard />
+            <LaunchCard codeBlockRef={ref3} />
 
-            <GridConnectors />
+            <GridConnectors containerRef={gridRef} refs={nodeRefs} />
           </div>
         </div>
       </main>

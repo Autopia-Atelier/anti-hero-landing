@@ -23,13 +23,13 @@ const Ladder = ({ side }: { side: "left" | "right" }) => (
     style={
       side === "left"
         ? {
-            right: "calc(100% + (100vw - 100%) / 4 - 5.5rem)",
-            left: "calc(-1 * (100vw - 100%) / 2)",
-          }
+          right: "calc(100% + (100vw - 100%) / 4 - 5.5rem)",
+          left: "calc(-1 * (100vw - 100%) / 2)",
+        }
         : {
-            left: "calc(100% + (100vw - 100%) / 4 - 5.5rem)",
-            right: "calc(-1 * (100vw - 100%) / 2)",
-          }
+          left: "calc(100% + (100vw - 100%) / 4 - 5.5rem)",
+          right: "calc(-1 * (100vw - 100%) / 2)",
+        }
     }
   >
     {Array.from({ length: RUNG_COUNT }).map((_, i) => (
@@ -97,13 +97,19 @@ function HeroButton2() {
 function HeroBadge() {
   return (
     <Badge
+      className="mx-auto border transition-all duration-300 delay-100 flex items-center gap-2 cursor-pointer group [&>svg]:size-0 relative overflow-hidden"
       variant="outline"
-      className="mx-auto border border-foreground/40 transition-all duration-300 delay-100 flex items-center gap-2 bg-muted-foreground/10 dark:bg-muted-foreground/20 text-foreground cursor-pointer group [&>svg]:size-0 relative overflow-hidden"
+      asChild
     >
-      <span className="shine absolute inset-0 bg-linear-to-r from-transparent via-white/60 to-transparent -translate-x-full" />
-      <p className="font-light">
-        The only starter kit you need to build your next saas
-      </p>
+      <Link href="/docs">
+        <span className="shine absolute inset-0 bg-linear-to-r from-transparent via-white/60 to-transparent -translate-x-full" />
+        <span className="relative flex h-1.5 w-1.5 animate-[rotate-sequence_2s_linear_infinite]">
+          <span className="absolute inline-flex h-full w-full bg-foreground opacity-75 animate-[ping-sequence_2s_linear_infinite]" />
+          <span className="relative inline-flex h-1.5 w-1.5 bg-foreground" />
+        </span>
+        <p className="font-light">Ship right away</p>
+        <ArrowRight className="-ml-2 size-0 opacity-0 group-hover:opacity-100 group-hover:size-3 group-hover:-ml-1 transition-all duration-300 delay-100" />
+      </Link>
     </Badge>
   );
 }
@@ -356,10 +362,9 @@ export default function Home() {
               <HeroBadge />
             </div>
             <h1 className="text-5xl">Akira</h1>
-            <p className="text-base text-muted-foreground mt-3 max-w-md leading-relaxed">
-              A modern starter with Next.js, Tailwind, shadcn/ui, Postgres,
-              Auth, Payments and Email baked in. Skip the setup, start building
-              and ship before the weekend.
+            <p className="text-base text-muted-foreground mt-3 max-w-lg leading-relaxed">
+              A modern starter with Next.js, Tailwind, ShadCN/ui, Motion, Drizzle, Postgres,
+              Auth, Dodo Payments, Resend.
             </p>
             <div className="mt-4 flex items-center gap-4">
               <HeroButton />
