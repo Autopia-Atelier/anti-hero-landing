@@ -4,6 +4,7 @@ import { useSession, signOut } from "@/lib/auth-client";
 import { LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -16,6 +17,7 @@ import {
 
 export function UserDropdown() {
   const { data: session, isPending } = useSession();
+  const [imageFailed, setImageFailed] = useState(false);
 
   if (isPending) {
     return <div className="size-8 rounded-none bg-muted animate-pulse" />;
@@ -41,12 +43,14 @@ export function UserDropdown() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button className="size-8 rounded-none border border-border bg-muted flex items-center justify-center overflow-hidden focus:outline-none">
-          {user.image ? (
+          {user.image && !imageFailed ? (
             <Image
               src={user.image}
               alt={user.name || "Avatar"}
               width={32}
               height={32}
+              unoptimized
+              onError={() => setImageFailed(true)}
               className="size-full object-cover"
             />
           ) : (
