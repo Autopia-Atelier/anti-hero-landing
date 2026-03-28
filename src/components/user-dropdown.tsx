@@ -2,6 +2,7 @@
 
 import { useSession, signOut } from "@/lib/auth-client";
 import { LogOut } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -41,9 +42,11 @@ export function UserDropdown() {
       <DropdownMenuTrigger asChild>
         <button className="size-8 rounded-none border border-border bg-muted flex items-center justify-center overflow-hidden focus:outline-none">
           {user.image ? (
-            <img
+            <Image
               src={user.image}
               alt={user.name || "Avatar"}
+              width={32}
+              height={32}
               className="size-full object-cover"
             />
           ) : (

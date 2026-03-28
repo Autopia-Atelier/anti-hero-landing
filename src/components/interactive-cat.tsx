@@ -1,28 +1,44 @@
 "use client";
 
-import { motion, useMotionValue, useTransform, AnimatePresence } from "motion/react";
+import { m, LazyMotion, domAnimation, useMotionValue, useTransform, AnimatePresence, useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState, useCallback } from "react";
 
 export function InteractiveCat({ externalPartyTrigger = 0 }: { externalPartyTrigger?: number }) {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
+  const prefersReducedMotion = useReducedMotion();
   
   const [isBlinking, setIsBlinking] = useState(false);
   const [isPetting, setIsPetting] = useState(false);
   const [clickCount, setClickCount] = useState(0);
   const [isPartyMode, setIsPartyMode] = useState(false);
+  const partyResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // External party mode trigger
   const prevTrigger = useRef(externalPartyTrigger);
   useEffect(() => {
     if (externalPartyTrigger > 0 && externalPartyTrigger !== prevTrigger.current) {
       prevTrigger.current = externalPartyTrigger;
-      if (!isPartyMode) {
-        setIsPartyMode(true);
-        setTimeout(() => setIsPartyMode(false), 5000);
+      if (partyResetTimer.current) {
+        clearTimeout(partyResetTimer.current);
       }
+
+      // Schedule state updates asynchronously to avoid sync setState in effect.
+      setTimeout(() => setIsPartyMode(true), 0);
+      partyResetTimer.current = setTimeout(() => {
+        setIsPartyMode(false);
+        partyResetTimer.current = null;
+      }, 5000);
     }
-  }, [externalPartyTrigger, isPartyMode]);
+  }, [externalPartyTrigger]);
+
+  useEffect(() => {
+    return () => {
+      if (partyResetTimer.current) {
+        clearTimeout(partyResetTimer.current);
+      }
+    };
+  }, []);
 
   // Natural blinking effect
   useEffect(() => {
@@ -75,7 +91,13 @@ export function InteractiveCat({ externalPartyTrigger = 0 }: { externalPartyTrig
     if (newCount >= 7) {
       setIsPartyMode(true);
       setClickCount(0);
-      setTimeout(() => setIsPartyMode(false), 5000);
+      if (partyResetTimer.current) {
+        clearTimeout(partyResetTimer.current);
+      }
+      partyResetTimer.current = setTimeout(() => {
+        setIsPartyMode(false);
+        partyResetTimer.current = null;
+      }, 5000);
     } else {
       setClickCount(newCount);
     }
@@ -98,31 +120,33 @@ export function InteractiveCat({ externalPartyTrigger = 0 }: { externalPartyTrig
     <div 
       className="relative w-full h-full flex items-center justify-center overflow-hidden bg-transparent group cursor-pointer"
       style={{ perspective: 1000 }}
+      role="img"
+      aria-label="Interactive cat illustration"
       onMouseDown={() => { setIsPetting(true); handleInteraction(); }}
       onMouseUp={() => setIsPetting(false)}
       onMouseLeave={() => setIsPetting(false)}
     >
+      <LazyMotion features={domAnimation}>
       <AnimatePresence>
         {isPetting && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 0, scale: 0.5 }}
-            animate={{ opacity: 1, y: -100, scale: 1.2 }}
-            exit={{ opacity: 0, y: -140, scale: 0.8 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
+            animate={prefersReducedMotion ? { opacity: 1, y: -20, scale: 1 } : { opacity: 1, y: -100, scale: 1.2 }}
+            exit={prefersReducedMotion ? { opacity: 0, y: -24, scale: 1 } : { opacity: 0, y: -140, scale: 0.8 }}
+            transition={prefersReducedMotion ? { duration: 0.15 } : { duration: 0.6, ease: "easeOut" }}
             className="absolute top-[35%] left-1/2 -translate-x-1/2 text-pink-500 z-20 pointer-events-none"
           >
             <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor" stroke="none">
               <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
             </svg>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
-
-      <motion.div
+      <m.div
         className="relative z-10 flex items-center justify-center w-full h-full"
         style={{
-          rotateX,
-          rotateY,
+          rotateX: prefersReducedMotion ? 0 : rotateX,
+          rotateY: prefersReducedMotion ? 0 : rotateY,
           transformStyle: "preserve-3d",
         }}
       >
@@ -164,24 +188,24 @@ export function InteractiveCat({ externalPartyTrigger = 0 }: { externalPartyTrig
           />
 
           {/* Left Eye */}
-          <motion.g style={{ x: eyeX, y: eyeY }}>
+          <m.g style={{ x: eyeX, y: eyeY }}>
             <path
               strokeWidth="1.2"
               stroke={strokeColor}
               className={baseColorClass}
               d={leftEyePath}
             />
-          </motion.g>
+          </m.g>
 
           {/* Right Eye */}
-          <motion.g style={{ x: eyeX, y: eyeY }}>
+          <m.g style={{ x: eyeX, y: eyeY }}>
             <path
               strokeWidth="1.2"
               stroke={strokeColor}
               className={baseColorClass}
               d={rightEyePath}
             />
-          </motion.g>
+          </m.g>
 
           {/* Nose/Mouth (Filled but retaining rounded strokes) */}
           <path
@@ -192,7 +216,8 @@ export function InteractiveCat({ externalPartyTrigger = 0 }: { externalPartyTrig
             className={baseColorClass}
           />
         </svg>
-      </motion.div>
+      </m.div>
+      </LazyMotion>
     </div>
   );
 }
