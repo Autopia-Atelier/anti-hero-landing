@@ -6,7 +6,7 @@
  */
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useRef } from "react";
 import {
   ReactFlow,
   Background,
@@ -46,6 +46,7 @@ export function AttackChainGraph({ nodes, edges, className = "" }: AttackChainPr
 
   /* 入场动画：节点级联 fade-in */
   const onInit = useCallback(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (!containerRef.current) return;
     const nodeEls = containerRef.current.querySelectorAll(".react-flow__node");
     animate(Array.from(nodeEls), {
@@ -55,12 +56,6 @@ export function AttackChainGraph({ nodes, edges, className = "" }: AttackChainPr
       duration: 400,
       ease: "outCubic",
     });
-  }, []);
-
-  /* reduced-motion 检测 */
-  const prefersReduced = useRef(false);
-  useEffect(() => {
-    prefersReduced.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   }, []);
 
   return (
@@ -74,7 +69,7 @@ export function AttackChainGraph({ nodes, edges, className = "" }: AttackChainPr
         edges={edges}
         nodeTypes={nodeTypes}
         defaultEdgeOptions={defaultEdgeOptions}
-        onInit={prefersReduced.current ? undefined : onInit}
+        onInit={onInit}
         fitView
         proOptions={{ hideAttribution: true }}
         nodesDraggable={false}

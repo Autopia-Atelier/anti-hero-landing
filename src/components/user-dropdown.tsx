@@ -23,7 +23,9 @@ export function UserDropdown() {
     return <div className="size-8 rounded-none bg-muted animate-pulse" />;
   }
 
-  if (!session) {
+  const user = session?.user;
+
+  if (!user) {
     return (
       <Button variant="ghost" className="rounded-none" asChild>
         <Link href="/signin">Sign in</Link>
@@ -31,8 +33,8 @@ export function UserDropdown() {
     );
   }
 
-  const user = session.user;
-  const initials = (user.name || user.email)
+  const displayName = user.name || user.email || "User";
+  const initials = displayName
     .split(" ")
     .map((s) => s[0])
     .slice(0, 2)
@@ -46,7 +48,7 @@ export function UserDropdown() {
           {user.image && !imageFailed ? (
             <Image
               src={user.image}
-              alt={user.name || "Avatar"}
+              alt={displayName}
               width={32}
               height={32}
               unoptimized
@@ -62,7 +64,7 @@ export function UserDropdown() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="rounded-none border-border">
         <DropdownMenuLabel className="font-normal">
-          <div className="text-sm font-medium">{user.name}</div>
+          <div className="text-sm font-medium">{displayName}</div>
           <div className="text-xs text-muted-foreground">{user.email}</div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
