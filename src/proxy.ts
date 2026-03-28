@@ -6,12 +6,13 @@
  */
 import { NextRequest, NextResponse } from "next/server";
 import { evlogMiddleware } from "evlog/next";
-import { auth } from "@/lib/auth";
+import { getAuth } from "@/lib/auth";
 
 /* evlog 注入 x-request-id 和 x-evlog-start 头 */
 const withEvlogHeaders = evlogMiddleware();
 
 export default async function proxy(request: NextRequest) {
+  const auth = getAuth();
   const session = await auth.api.getSession({
     headers: request.headers,
   });
