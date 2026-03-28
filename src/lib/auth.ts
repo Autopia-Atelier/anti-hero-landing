@@ -4,14 +4,8 @@ import { db } from "@/db";
 import { Resend } from "resend";
 import WelcomeEmail from "@/components/email/email";
 
-let authInstance: ReturnType<typeof betterAuth> | null = null;
-
-export function getAuth() {
-  if (authInstance) {
-    return authInstance;
-  }
-
-  authInstance = betterAuth({
+function createAuth() {
+  return betterAuth({
     socialProviders: {
       google: {
         clientId: process.env.GOOGLE_CLIENT_ID as string,
@@ -51,6 +45,17 @@ export function getAuth() {
       },
     },
   });
+}
 
-  return authInstance;
+type AuthInstance = ReturnType<typeof createAuth>;
+let authInstance: AuthInstance | undefined;
+
+export function getAuth() {
+  if (authInstance) {
+    return authInstance;
+  }
+
+  const createdAuth = createAuth();
+  authInstance = createdAuth;
+  return createdAuth;
 }
