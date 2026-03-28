@@ -57,6 +57,19 @@ export const CATEGORIES = [
       { id: "contribution", label: "Contribution" },
     ],
   },
+  {
+    id: "dashboard",
+    title: "Dashboard",
+    desc: "攻击链可视化、日志、指标、供应链",
+    sections: [
+      { id: "attack-chain", label: "Attack Chain" },
+      { id: "terminal", label: "Terminal Output" },
+      { id: "mcp-comparison", label: "MCP Comparison" },
+      { id: "supply-chain", label: "Supply Chain" },
+      { id: "metrics", label: "Metrics" },
+      { id: "fix-points", label: "Fix Points" },
+    ],
+  },
 ] as const;
 
 /* ─────────────────────────────────────────────

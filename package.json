@@ -12,6 +12,8 @@
     "@dodopayments/nextjs": "^0.3.4",
     "@neondatabase/serverless": "^1.0.2",
     "@react-email/components": "^1.0.8",
+    "@xyflow/react": "^12.10.2",
+    "animejs": "^4.3.6",
     "better-auth": "^1.5.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -36,6 +38,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/animejs": "^3.1.13",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

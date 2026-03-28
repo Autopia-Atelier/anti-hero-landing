@@ -83,6 +83,11 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --severity-critical: oklch(0.577 0.245 27.325);
+  --severity-high: oklch(0.705 0.213 47.604);
+  --severity-medium: oklch(0.795 0.184 86.047);
+  --severity-low: oklch(0.723 0.191 149.579);
+  --severity-info: oklch(0.556 0 0);
 }
 
 .dark {
@@ -117,6 +122,11 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+  --severity-critical: oklch(0.704 0.191 22.216);
+  --severity-high: oklch(0.768 0.188 60.08);
+  --severity-medium: oklch(0.828 0.189 84.429);
+  --severity-low: oklch(0.696 0.17 162.48);
+  --severity-info: oklch(0.708 0 0);
 }
 
 @keyframes tech-fade-in {
