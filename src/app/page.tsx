@@ -14,6 +14,7 @@ import { UserDropdown } from "@/components/user-dropdown";
 import { useSession } from "@/lib/auth-client";
 import { motion } from "motion/react";
 import Link from "next/link";
+import { AntiHeroSection } from "@/components/anti-hero-section";
 
 const RUNG_COUNT = 10;
 
@@ -332,7 +333,7 @@ function MicroHeroThree() {
 
 export default function Home() {
   return (
-    <div className="flex h-screen w-full flex-col overflow-hidden">
+    <div className="flex min-h-screen w-full flex-col">
       <div className="mx-auto flex w-full max-w-7xl min-w-0 flex-col border-x">
         <nav className="relative flex h-(--nav-height) items-center justify-between px-4 sm:px-6">
           <Link href="/" className="font-pixel-square">Akira</Link>
@@ -343,6 +344,10 @@ export default function Home() {
         </nav>
       </div>
 
+      {/* ── Anti Hero Section ─────────────────────────────── */}
+      <AntiHeroSection />
+
+      {/* ── Original Akira Section ────────────────────────── */}
       <div className="min-h-[calc(100vh-var(--nav-height)-var(--footer-height))] flex-1 w-full xl:grid xl:grid-cols-[minmax(0,1fr)_minmax(0,80rem)_minmax(0,1fr)]">
         <aside className="pointer-events-none hidden xl:flex pr-[20%]">
           <Ladder side="left" />
