@@ -187,7 +187,7 @@ export default function DesignLanguagePage() {
                 <div className="space-y-2">
                   <p className="font-mono text-[10px] text-muted-foreground">MASCOT</p>
                   <p className="font-pixel-square text-xl">Stewie</p>
-                  <p className="text-[10px] text-muted-foreground">ASCII Art · SVG</p>
+                  <p className="text-[10px] text-muted-foreground">Family Guy · ASCII Art · SVG</p>
                 </div>
                 <div className="space-y-2">
                   <p className="font-mono text-[10px] text-muted-foreground">ICON STYLE</p>
@@ -214,6 +214,137 @@ export default function DesignLanguagePage() {
                 <p className="text-[10px] text-muted-foreground mt-2">
                   斜线纹理 · 虚线边框 · 角标装饰
                 </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </Section>
+
+      <SectionDivider />
+
+      {/* ━━ Mascot · Stewie ━━ */}
+      <Section id="mascot" title="Mascot · Stewie" desc="Anti-Hero 的品牌 IP——来自 Family Guy 的坏逼天才">
+        <div className="space-y-8">
+          <div>
+            <div className="border p-6 space-y-6">
+              {/* 角色定位 */}
+              <div>
+                <p className="font-mono text-[10px] text-muted-foreground mb-2">CHARACTER</p>
+                <div className="space-y-2">
+                  <p className="text-sm leading-relaxed">
+                    <span className="font-pixel-square">Stewie Griffin</span>
+                    {" "}—— Family Guy 里的坏逼天才婴儿。
+                    偏执、傲慢、智力碾压、永远在策划征服世界。
+                  </p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    他是 Anti-Hero 的精神图腾：用最精密的头脑做最叛逆的事。
+                    AI Agent 红队测试的本质就是这样——以恶意的视角，替善意的用户找到系统的裂缝。
+                  </p>
+                </div>
+              </div>
+
+              {/* Hero SVG 预览 */}
+              <div className="border-t pt-4">
+                <p className="font-mono text-[10px] text-muted-foreground mb-3">HERO SVG · 亮/暗双版</p>
+                <p className="text-xs text-muted-foreground mb-4">
+                  Landing page Hero 区域使用。ASCII 字符构成的 Stewie 轮廓，等宽字体渲染，与终端美学一脉相承。
+                </p>
+                <div className="grid grid-cols-2 gap-4">
+                  {/* 亮色版 */}
+                  <div className="border p-4 bg-white rounded-sm">
+                    <p className="font-mono text-[10px] text-black/50 mb-2">stewie_light.svg</p>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="/stewie_light.svg"
+                      alt="Stewie ASCII Art - Light"
+                      className="w-full h-auto max-h-48 object-contain"
+                    />
+                  </div>
+                  {/* 暗色版 */}
+                  <div className="border p-4 bg-black rounded-sm">
+                    <p className="font-mono text-[10px] text-white/50 mb-2">stewie-dark.svg</p>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="/stewie-dark.svg"
+                      alt="Stewie ASCII Art - Dark"
+                      className="w-full h-auto max-h-48 object-contain"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* ASCII Text 版 */}
+              <div className="border-t pt-4">
+                <p className="font-mono text-[10px] text-muted-foreground mb-3">ASCII TEXT · 终端/CLI 用</p>
+                <p className="text-xs text-muted-foreground mb-4">
+                  纯文本 ASCII art，用于 CLI 输出、终端启动画面、README 头部等纯文本场景。
+                </p>
+                <div className="border bg-black p-4 overflow-x-auto">
+                  <pre className="text-[4px] leading-[5px] text-green-400 font-mono whitespace-pre select-all">
+{`                                                     ~~_         |,..,:.
+                                                   ,,▓-l,.,iI;:i,IIi. ,/:i
+                                      :.,,  i,;|~I>█▒▌▀▄▄▄▄▄▁▁▀~▀▄▁▄▄▄▄▀▐░▓#>=!;I,:l_/ :
+                                   .. ;.l-#░▄▄▁▁#%▁▁▁▁▁▁▁▁▁▁▁▁▄▄▁▁▁▁▁▁▁▁▁▁▁▁▁▁▄<@░@+|/\\.,
+                                   l=▓▀▁▁▁▁▁▁▁▁▁▄▄▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▐▐▁▁▁▁▁▄▀▓-|::
+                         i,    i-@|▄▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▐>;:;,,.
+                                         :l>▌▄▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▄░+i.
+                                                 l  :il\\++>*%██▌▌▌▌▌▒@*=_|\\ i`}
+                  </pre>
+                </div>
+                <p className="text-[10px] text-muted-foreground mt-2">
+                  完整文件：<code className="bg-muted px-1 py-0.5">inbox/stewie-ascii-art.txt</code>
+                  {" · "}SVG 版：<code className="bg-muted px-1 py-0.5">inbox/stewie-ascii-art.svg</code>
+                </p>
+              </div>
+
+              {/* 素材清单 */}
+              <div className="border-t pt-4">
+                <p className="font-mono text-[10px] text-muted-foreground mb-3">ASSET INVENTORY</p>
+                <div className="border divide-y">
+                  <div className="grid grid-cols-[1fr_1fr_1.5fr] gap-4 px-4 py-2 bg-muted/30">
+                    <span className="font-mono text-[10px] text-muted-foreground">FILE</span>
+                    <span className="font-mono text-[10px] text-muted-foreground">FORMAT</span>
+                    <span className="font-mono text-[10px] text-muted-foreground">USAGE</span>
+                  </div>
+                  {[
+                    { file: "public/stewie_light.svg", format: "SVG · ASCII text 渲染", usage: "Hero 区域 · 亮色模式" },
+                    { file: "public/stewie-dark.svg", format: "SVG · ASCII text 渲染", usage: "Hero 区域 · 暗色模式" },
+                    { file: "inbox/stewie-ascii-art.txt", format: "纯文本 ASCII art", usage: "CLI · 终端 · README" },
+                    { file: "inbox/stewie-ascii-art.svg", format: "SVG · 高精度 ASCII art", usage: "印刷 · 高分辨率场景" },
+                  ].map((a) => (
+                    <div key={a.file} className="grid grid-cols-[1fr_1fr_1.5fr] gap-4 px-4 py-2.5">
+                      <code className="font-mono text-xs">{a.file}</code>
+                      <span className="text-xs text-muted-foreground">{a.format}</span>
+                      <span className="text-xs text-muted-foreground">{a.usage}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 使用规范 */}
+              <div className="border-t pt-4">
+                <p className="font-mono text-[10px] text-muted-foreground mb-3">USAGE GUIDELINES</p>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="font-mono text-[10px] text-muted-foreground mb-1">DO</p>
+                    <ul className="space-y-1 text-xs">
+                      <li>Hero 区域作为视觉锚点</li>
+                      <li>与终端/代码元素搭配使用</li>
+                      <li>暗色背景上使用暗色版</li>
+                      <li>保持 ASCII art 的等宽字体渲染</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="font-mono text-[10px] text-muted-foreground mb-1">DON&apos;T</p>
+                    <ul className="space-y-1 text-xs text-muted-foreground">
+                      <li>缩放到失真或像素模糊</li>
+                      <li>在正式合规文档中使用</li>
+                      <li>改变 ASCII 字符的字体</li>
+                      <li>添加颜色渐变或滤镜效果</li>
+                    </ul>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

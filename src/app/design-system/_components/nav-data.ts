@@ -16,6 +16,7 @@ export const CATEGORIES = [
     desc: "品牌、调性、写作指南",
     sections: [
       { id: "brand", label: "Brand" },
+      { id: "mascot", label: "Mascot · Stewie" },
       { id: "guidelines", label: "Guidelines" },
     ],
   },
