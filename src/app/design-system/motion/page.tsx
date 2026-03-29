@@ -42,16 +42,16 @@ const TimelineDemo = dynamic(
  * ───────────────────────────────────────────── */
 
 const DISNEY_PRINCIPLES = [
-  { name: "Squash & Stretch", impl: "scaleX/scaleY 压缩拉伸，保持体积守恒" },
-  { name: "Anticipation", impl: "动作前的微小反向预备，20-100ms" },
-  { name: "Staging", impl: "运动层级：主角先动，配角跟随" },
-  { name: "Follow Through", impl: "stagger 延迟，子元素在父元素停止后继续" },
-  { name: "Slow In / Slow Out", impl: "ease-out 主导，永远不用 linear" },
-  { name: "Arc", impl: "translateX + translateY 不同缓动模拟弧线" },
-  { name: "Secondary Action", impl: "阴影、光晕响应主动作" },
-  { name: "Timing", impl: "micro 100-200ms · standard 200-400ms · complex 400-700ms" },
-  { name: "Exaggeration", impl: "scale 1.05-1.15，不超过 1.2" },
-  { name: "Appeal", impl: "60fps · transform/opacity only · 有意图的运动" },
+  { name: "Squash & Stretch", impl: "scaleX/scaleY 压缩拉伸，保持体积守恒。快速运动 = 更多拉伸，冲击 = 瞬间压缩" },
+  { name: "Anticipation", impl: "动作前的微小反向预备 20-100ms。像猎豹扑击前的蓄力——不是犹豫，是聚力" },
+  { name: "Staging", impl: "主角先动，配角跟随。运动层级清晰，不让次要元素抢夺注意力" },
+  { name: "Follow Through", impl: "stagger 延迟，子元素在父元素停止后继续运动。重物不会突然停止" },
+  { name: "Slow In / Slow Out", impl: "ease-out 主导，永远不用 linear。时间在边缘是弹性的" },
+  { name: "Arc", impl: "translateX + translateY 不同缓动模拟弧线。力量走直线，优雅走弧线" },
+  { name: "Secondary Action", impl: "阴影、光晕、背景响应主动作。当力量落地，环境要有反应" },
+  { name: "Timing", impl: "micro 100-200ms · standard 200-400ms · complex 400-700ms。帧数决定重量感" },
+  { name: "Exaggeration", impl: "scale 1.05-1.15，不超过 1.2。放大冲击，不放大运动过程" },
+  { name: "Appeal", impl: "60fps · transform/opacity only · 有意图的运动。节奏感让动画有生命" },
 ] as const;
 
 const MOTION_TOKENS = [
@@ -145,6 +145,87 @@ export default function MotionPage() {
               </p>
             </div>
           </div>
+
+          {/* Timing Mastery */}
+          <div>
+            <SubHeading>TIMING MASTERY · 像鼓手一样思考</SubHeading>
+            <div className="border p-6 space-y-4">
+              <p className="text-xs text-muted-foreground">
+                动画是节奏的可视化。帧与帧之间的间隔，和帧本身一样重要。
+                同样的运动，不同的速度讲述完全不同的故事：
+              </p>
+              <div className="grid grid-cols-3 gap-3">
+                {[
+                  { speed: "Fast", feel: "轻盈 · 紧迫 · 喜剧感", color: "var(--severity-low)" },
+                  { speed: "Medium", feel: "自信 · 专业 · 有意图", color: "var(--severity-info)" },
+                  { speed: "Slow", feel: "沉重 · 戏剧性 · 深思熟虑", color: "var(--severity-medium)" },
+                ].map((s) => (
+                  <div key={s.speed} className="border p-3 text-center">
+                    <p className="font-mono text-xs font-medium" style={{ color: s.color }}>{s.speed}</p>
+                    <p className="text-[10px] text-muted-foreground mt-1">{s.feel}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="border-t pt-3 space-y-1">
+                <p className="font-mono text-[10px] text-muted-foreground mb-2">GOLDEN RULE</p>
+                <p className="text-xs">
+                  <span className="font-medium">时间是相对的。</span>
+                  <span className="text-muted-foreground"> 快只有在慢的衬托下才显得快。建立对比——让安静的时刻放大喧嚣的时刻。笑点前的停顿，才是让它落地的原因。</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Rhythm & Pacing */}
+          <div>
+            <SubHeading>RHYTHM & PACING · 像作曲家一样编排</SubHeading>
+            <div className="border p-6 space-y-4">
+              <p className="text-xs text-muted-foreground">
+                动画是视觉音乐。节拍、小节、渐强、休止——都可以转化为运动与静止的时间编排。
+              </p>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="font-mono text-[10px] text-muted-foreground mb-2">MUSICAL TERMS</p>
+                  <div className="space-y-1">
+                    {[
+                      { term: "Accelerando", def: "加速——向高潮推进" },
+                      { term: "Ritardando", def: "减速——进入解决段" },
+                      { term: "Fermata", def: "延长停顿——比预期更久的 hold" },
+                      { term: "Staccato", def: "短促有力——快速弹性动作" },
+                      { term: "Legato", def: "连贯流畅——平滑过渡" },
+                    ].map((m) => (
+                      <div key={m.term} className="flex gap-3">
+                        <span className="font-mono text-[10px] w-24 shrink-0 text-[var(--severity-info)]">{m.term}</span>
+                        <span className="text-[10px] text-muted-foreground">{m.def}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <p className="font-mono text-[10px] text-muted-foreground mb-2">SCENE STRUCTURE</p>
+                  <div className="space-y-1">
+                    {[
+                      { phase: "Opening", action: "建立节奏基调" },
+                      { phase: "Development", action: "在基调内变化" },
+                      { phase: "Climax", action: "最快或最强烈" },
+                      { phase: "Resolution", action: "回归平静或新节奏" },
+                    ].map((s) => (
+                      <div key={s.phase} className="flex gap-3">
+                        <span className="font-mono text-[10px] w-24 shrink-0 text-muted-foreground">{s.phase}</span>
+                        <span className="text-[10px]">{s.action}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="border-t pt-3">
+                <p className="text-xs">
+                  <span className="font-medium">节奏 = 预期 + 惊喜。</span>
+                  <span className="text-muted-foreground"> 建立模式让观众感受到节拍，然后在完美的时机打破它。艺术在于知道何时可预测，何时切分。</span>
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </Section>
 
@@ -207,17 +288,47 @@ export default function MotionPage() {
             <SubHeading>STAGGER STRATEGIES</SubHeading>
             <div className="border divide-y">
               {[
-                { name: "linear", delay: "stagger(80)", desc: "等间距，整齐感" },
-                { name: "cascade", delay: "stagger(60, { start: 0 })", desc: "瀑布流，自然感" },
-                { name: "wave", delay: "stagger(50, { from: 'center' })", desc: "从中心扩散，聚焦感" },
-                { name: "grid", delay: "stagger(30, { grid: [4,3] })", desc: "二维网格，空间感" },
+                { name: "linear", delay: "stagger(80)", desc: "等间距，整齐感。适合列表、表格行" },
+                { name: "cascade", delay: "stagger(60, { start: 0 })", desc: "瀑布流，自然感。适合卡片网格" },
+                { name: "wave", delay: "stagger(50, { from: 'center' })", desc: "从中心扩散，聚焦感。适合 hero 区域" },
+                { name: "grid", delay: "stagger(30, { grid: [4,3] })", desc: "二维网格，空间感。适合图标矩阵" },
+                { name: "accelerating", delay: "delays: [0, 80, 140, 180]", desc: "越来越快，紧迫感。适合 loading 序列" },
+                { name: "decelerating", delay: "delays: [0, 40, 100, 180]", desc: "越来越慢，沉淀感。适合结果展示" },
               ].map((s) => (
-                <div key={s.name} className="grid grid-cols-[80px_1fr_1fr] gap-4 px-4 py-2.5">
+                <div key={s.name} className="grid grid-cols-[90px_1fr_1fr] gap-4 px-4 py-2.5">
                   <span className="font-mono text-xs font-medium">{s.name}</span>
                   <code className="font-mono text-[10px] text-muted-foreground">{s.delay}</code>
                   <span className="text-xs text-muted-foreground">{s.desc}</span>
                 </div>
               ))}
+            </div>
+          </div>
+
+          <div>
+            <SubHeading>ORCHESTRATION PRINCIPLE</SubHeading>
+            <div className="border p-4 space-y-3">
+              <p className="text-xs text-muted-foreground">
+                编排是时间中的构图。就像视觉设计在空间中排列元素，动画编排在时间中排列运动。
+                目标是一个连贯的整体表演，而不是一堆独立动画的集合。
+              </p>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="font-mono text-[10px] text-muted-foreground mb-1">HIERARCHY</p>
+                  <ul className="space-y-1 text-xs text-muted-foreground">
+                    <li>主角先动，配角跟随</li>
+                    <li>同一缓动家族保持一致</li>
+                    <li>主元素更夸张，支撑元素更克制</li>
+                  </ul>
+                </div>
+                <div>
+                  <p className="font-mono text-[10px] text-muted-foreground mb-1">COHESION</p>
+                  <ul className="space-y-1 text-xs text-muted-foreground">
+                    <li>不要混用弹性和刚性风格</li>
+                    <li>元素运动方向要互补，不要随机</li>
+                    <li>每个元素在构图中都有角色</li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -302,33 +413,53 @@ export default function MotionPage() {
           </div>
 
           <div>
+            <SubHeading>ANIME.JS V4 API MAP</SubHeading>
+            <div className="border divide-y">
+              {[
+                { api: "animate()", bundle: "5.2KB", desc: "核心动画，CSS/transform/opacity/SVG 属性" },
+                { api: "createTimeline()", bundle: "+0.55KB", desc: "多元素时间轴，支持相对时间位置 (<, >, +=)" },
+                { api: "stagger()", bundle: "+0.48KB", desc: "延迟分布，支持 grid/from/start/ease" },
+                { api: "createSpring()", bundle: "+0.52KB", desc: "弹簧物理，stiffness/damping/mass/velocity" },
+                { api: "onScroll()", bundle: "+4.3KB", desc: "滚动同步，sync/threshold/repeat" },
+                { api: "createDraggable()", bundle: "+6.4KB", desc: "拖拽，spring release，container 约束" },
+                { api: "splitText()", bundle: "~0.3KB", desc: "文字拆分为 chars/words/lines，逐字动画" },
+                { api: "createDrawable()", bundle: "~0.35KB", desc: "SVG 路径描边动画，draw: ['0 0', '0 1']" },
+                { api: "createScope()", bundle: "+0.22KB", desc: "React 集成，自动 cleanup，mediaQuery 响应" },
+              ].map((a) => (
+                <div key={a.api} className="grid grid-cols-[140px_70px_1fr] gap-4 px-4 py-2.5">
+                  <code className="font-mono text-xs font-medium">{a.api}</code>
+                  <span className="font-mono text-[10px] text-[var(--severity-low)]">{a.bundle}</span>
+                  <span className="text-xs text-muted-foreground">{a.desc}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
             <SubHeading>ANIME.JS QUICK REFERENCE</SubHeading>
             <div className="border bg-[oklch(0.11_0_0)] p-4">
-              <pre className="font-mono text-[11px] text-[oklch(0.75_0_0)] leading-relaxed overflow-x-auto">{`import { animate, stagger, createTimeline } from "animejs";
+              <pre className="font-mono text-[11px] text-[oklch(0.75_0_0)] leading-relaxed overflow-x-auto">{`import { animate, stagger, createTimeline, createSpring } from "animejs";
 
 // 单元素入场
-animate(el, {
-  opacity: [0, 1],
-  translateY: [-8, 0],
-  duration: 300,
-  ease: "outCubic",
-});
+animate(el, { opacity: [0, 1], translateY: [-8, 0], duration: 300, ease: "outCubic" });
 
-// stagger 列表
+// stagger 列表（wave from center）
 animate(items, {
-  opacity: [0, 1],
-  translateY: [-12, 0],
-  delay: stagger(80),
-  duration: 350,
-  ease: "outCubic",
+  opacity: [0, 1], translateY: [-12, 0],
+  delay: stagger(80, { from: "center" }),
+  duration: 350, ease: "outCubic",
 });
 
-// timeline 序列
-const tl = createTimeline();
-tl.add(el1, { translateX: [0, 100], duration: 300 }, 0);
-tl.add(el2, { opacity: [0, 1], duration: 200 }, 200);
+// timeline 攻击序列
+const tl = createTimeline({ defaults: { ease: "outCubic" } });
+tl.add(probe, { opacity: [0, 1], duration: 200 }, 0)
+  .add(inject, { translateX: [-8, 0], duration: 200 }, 200)
+  .add(verify, { scale: [0.9, 1], duration: 300 }, "<");
 
-// 检查 prefers-reduced-motion（必须）
+// spring 弹性（Stewie 模态框）
+animate(modal, { scale: [0.8, 1], ease: createSpring({ stiffness: 200, damping: 15 }) });
+
+// 必须检查 prefers-reduced-motion
 if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;`}</pre>
             </div>
           </div>

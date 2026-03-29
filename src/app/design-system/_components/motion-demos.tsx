@@ -393,29 +393,33 @@ export function StaggerDemo() {
  * BrandMotionDemo — 品牌动效演示
  * ───────────────────────────────────────────── */
 
-const BRAND_PRESETS: { id: string; label: string; desc: string; config: AnimationParams }[] = [
+const BRAND_PRESETS: { id: string; label: string; desc: string; timing: string; config: AnimationParams }[] = [
   {
     id: "power",
     label: "Power & Confidence",
-    desc: "稳重、果断、有分量",
-    config: { duration: 250, ease: "outQuart", scale: [0.92, 1], opacity: [0, 1] },
+    desc: "稳重、果断、有分量 · 快速加速，决定性落地",
+    timing: "250ms · ease-out 急停",
+    config: { duration: 250, ease: "outExpo", translateY: [-20, 2, 0], scale: [1.05, 0.98, 1], opacity: [0, 1] },
   },
   {
     id: "professional",
     label: "Professionalism",
-    desc: "克制、精准、不花哨",
+    desc: "克制、精准、不花哨 · 无弹性，直接到位",
+    timing: "200ms · outCubic",
     config: { duration: 200, ease: "outCubic", translateY: [-6, 0], opacity: [0, 1] },
   },
   {
     id: "saas",
     label: "SaaS Productivity",
-    desc: "快速、清晰、不打扰",
+    desc: "快速、清晰、不打扰 · 对专注工作的用户隐形",
+    timing: "150ms · outCubic",
     config: { duration: 150, ease: "outCubic", translateX: [-8, 0], opacity: [0, 1] },
   },
   {
     id: "elegance",
     label: "Elegance",
-    desc: "流畅、柔和、高级感",
+    desc: "流畅、柔和、高级感 · 延长 settle，扫弧感",
+    timing: "500ms · inOutSine",
     config: { duration: 500, ease: "inOutSine", scale: [0.96, 1], opacity: [0, 1] },
   },
 ];
@@ -451,7 +455,7 @@ export function BrandMotionDemo() {
             onClick={() => runPreset(i)}
             className="w-full border border-border px-2 py-1.5 font-mono text-[10px] hover:bg-muted/30 transition-colors"
           >
-            Play · {preset.config.duration as number}ms
+            Play · {preset.timing}
           </button>
         </div>
       ))}
