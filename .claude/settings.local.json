@@ -5,7 +5,10 @@
       "Bash(pnpm run:*)",
       "Bash(bun run:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(cp /Users/apple/Workspace/code/company/anti-hero/inbox/stewie-ascii-art.txt /Users/apple/Workspace/code/company/anti-hero/anti-hero-landing/public/stewie-ascii-art.txt)",
+      "Bash(cp /Users/apple/Workspace/code/company/anti-hero/inbox/stewie-ascii-art.svg /Users/apple/Workspace/code/company/anti-hero/anti-hero-landing/public/stewie-ascii-art.svg)",
+      "Bash(npx tsc:*)"
     ]
   }
 }

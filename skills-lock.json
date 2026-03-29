@@ -1,0 +1,125 @@
+{
+  "version": 1,
+  "skills": {
+    "analyze-logs": {
+      "source": "hugorcd/evlog",
+      "sourceType": "github",
+      "computedHash": "28bd8254997b767ebba1f7f2cf4567ddb6c51b1fcdca9baf9b9cd7ee3ca51d7c"
+    },
+    "anime-js": {
+      "source": "dylantarre/animation-principles",
+      "sourceType": "github",
+      "computedHash": "06a724fa1feccdd01bc4ec4e0c78861e08b696110c106beb9a77b2370b879a68"
+    },
+    "animejs": {
+      "source": "bowtiedswan/animejs-skills",
+      "sourceType": "github",
+      "computedHash": "7c9f6df3e3d1ac266dfbaf4f4675e0c34f1f8016ca9a6a446bd186ab38b532d4"
+    },
+    "buttons-ctas": {
+      "source": "dylantarre/animation-principles",
+      "sourceType": "github",
+      "computedHash": "f96a46b83334137059fad7ca179d883428be51099f6b939b8923d4d0c19d19bb"
+    },
+    "cards-containers": {
+      "source": "dylantarre/animation-principles",
+      "sourceType": "github",
+      "computedHash": "315eb72c146f3a19cd394c563fc1334b5792bb69e5c2b5d93577b25cfcce49ac"
+    },
+    "create-evlog-adapter": {
+      "source": "hugorcd/evlog",
+      "sourceType": "github",
+      "computedHash": "fa9267e3d2ed26e1993b38f493857a6a9b98014d526dd4fb77d60e1e2e08d105"
+    },
+    "create-evlog-enricher": {
+      "source": "hugorcd/evlog",
+      "sourceType": "github",
+      "computedHash": "a37e7984f6b5c66473743c601c606f5c9965251ce9e18baf05450441c943b0c7"
+    },
+    "create-evlog-framework-integration": {
+      "source": "hugorcd/evlog",
+      "sourceType": "github",
+      "computedHash": "633329f0feb0369be4e1102e51975fe9e12f51ceb75e4d186c2426044f4710fe"
+    },
+    "data-visualization": {
+      "source": "dylantarre/animation-principles",
+      "sourceType": "github",
+      "computedHash": "025f32d2828f7c9f7eea64d44a5f581cf38049a60f3bdb9d3cc5cd0a773f57ae"
+    },
+    "elegance-sophistication": {
+      "source": "dylantarre/animation-principles",
+      "sourceType": "github",
+      "computedHash": "8575f5fb712247e5eb4e3591fedf3176b8bde779659ff1da432f3e9b21152cda"
+    },
+    "feedback-indicators": {
+      "source": "dylantarre/animation-principles",
+      "sourceType": "github",
+      "computedHash": "a384f25c769f01850512d70ce46085c9d147e25616d9519a861582761496a584"
+    },
+    "loading-states": {
+      "source": "dylantarre/animation-principles",
+      "sourceType": "github",
+      "computedHash": "2356ecbdf34f5dd585f42314f89e053c1d1e05f643930478c8e4e98a126d3b00"
+    },
+    "micro-100-200ms": {
+      "source": "dylantarre/animation-principles",
+      "sourceType": "github",
+      "computedHash": "30217fa45b6ca4617a64ba76f343d4eea35ae77c02aba8090b7ef5706dba7a85"
+    },
+    "micro-interactions": {
+      "source": "dylantarre/animation-principles",
+      "sourceType": "github",
+      "computedHash": "22a154d2e1a33e32f2946504502849dba5a934ac3654ba625a5807b836272955"
+    },
+    "orchestrated-sequences": {
+      "source": "dylantarre/animation-principles",
+      "sourceType": "github",
+      "computedHash": "2a3ba8f8b6b72555665efce7af7f3743ab804fe050cc17c03600c1ac422bcb1c"
+    },
+    "power-confidence": {
+      "source": "dylantarre/animation-principles",
+      "sourceType": "github",
+      "computedHash": "ab38b2e653886583038911019dd79136221192a129e9945c4b026ef61d32280b"
+    },
+    "professionalism-credibility": {
+      "source": "dylantarre/animation-principles",
+      "sourceType": "github",
+      "computedHash": "25743dd374d0f44371d23a39e530850f8e0836c23b292025d2b6cf017803e331"
+    },
+    "review-logging-patterns": {
+      "source": "hugorcd/evlog",
+      "sourceType": "github",
+      "computedHash": "67d7f83af04b6a90fd3f795d921793f330996058986047b59a323c8daa2aaf62"
+    },
+    "rhythm-pacing": {
+      "source": "dylantarre/animation-principles",
+      "sourceType": "github",
+      "computedHash": "8df7560d9e32be4471963fe61ae369341609e761815167e651900b18bde47f02"
+    },
+    "saas-productivity": {
+      "source": "dylantarre/animation-principles",
+      "sourceType": "github",
+      "computedHash": "bc352498d495d851299310bd9c02b3b0dcf993e7943735bb167f87e386e84d5b"
+    },
+    "small-200-300ms": {
+      "source": "dylantarre/animation-principles",
+      "sourceType": "github",
+      "computedHash": "0d90b0052208b0420154df0539291d34b301cc69a8177dae91c5e457055acbfb"
+    },
+    "state-changes": {
+      "source": "dylantarre/animation-principles",
+      "sourceType": "github",
+      "computedHash": "14465c147bcb76983ab2b6d7b69a9c5755634e4115ee1f5cf666b537e76726e9"
+    },
+    "timing-mastery": {
+      "source": "dylantarre/animation-principles",
+      "sourceType": "github",
+      "computedHash": "0f3382079499b9793eef1012a07d51600fd121539a6f671ae0a2a6665169fc39"
+    },
+    "web-motion-design": {
+      "source": "dylantarre/animation-principles",
+      "sourceType": "github",
+      "computedHash": "ec2e6a89573cb273bf12667ccbc2bde8cfd500271a1e7d888b05aba0ae7cc159"
+    }
+  }
+}
