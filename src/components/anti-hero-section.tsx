@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/lib/auth-client";
 import { ArrowRight, ArrowRightIcon, GithubIcon } from "lucide-react";
-import { motion } from "motion/react";
+import { LazyMotion, domAnimation, m } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -47,7 +47,7 @@ function AntiHeroBadge() {
           <span className="absolute inline-flex h-full w-full bg-foreground opacity-75 animate-[ping-sequence_2s_linear_infinite]" />
           <span className="relative inline-flex h-1.5 w-1.5 bg-foreground" />
         </span>
-        <p className="font-light">Ship right away</p>
+        <p className="font-light">Adversarial AI red-teaming</p>
         <ArrowRight className="-ml-2 size-0 opacity-0 group-hover:opacity-100 group-hover:size-3 group-hover:-ml-1 transition-all duration-300 delay-100" />
       </Link>
     </Badge>
@@ -63,7 +63,7 @@ function AntiHeroGithubButton() {
         className="rounded-none cursor-pointer relative overflow-hidden focus-visible:ring-0 h-8 px-3 py-1 border-dashed"
       >
         <a
-          href="https://github.com/sachigoyal/akira"
+          href="https://github.com/anti-hero-dev/stewie"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -106,7 +106,8 @@ function GetStewieButton() {
 
 export function AntiHeroSection() {
   return (
-    <div className="w-full xl:grid xl:grid-cols-[minmax(0,1fr)_minmax(0,80rem)_minmax(0,1fr)]">
+    <LazyMotion features={domAnimation}>
+      <div className="w-full xl:grid xl:grid-cols-[minmax(0,1fr)_minmax(0,80rem)_minmax(0,1fr)]">
       <aside className="pointer-events-none hidden xl:flex pr-[20%]">
         <Ladder side="left" />
       </aside>
@@ -114,7 +115,7 @@ export function AntiHeroSection() {
       <section className="mx-auto flex w-full max-w-7xl min-w-0 flex-col border-x border-b md:flex-row md:items-center md:min-h-[80vh]">
         {/* 左：文案 */}
         <div className="flex flex-1 flex-col justify-center font-pixel-square px-5 py-12 sm:px-8 sm:py-16 lg:px-10 xl:px-12">
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
@@ -134,11 +135,11 @@ export function AntiHeroSection() {
               <AntiHeroGithubButton />
               <GetStewieButton />
             </div>
-          </motion.div>
+          </m.div>
         </div>
 
         {/* 右：Stewie ASCII SVG */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
@@ -162,12 +163,13 @@ export function AntiHeroSection() {
               priority
             />
           </div>
-        </motion.div>
+        </m.div>
       </section>
 
-      <aside className="pointer-events-none hidden xl:flex pl-[20%]">
-        <Ladder side="right" />
-      </aside>
-    </div>
+        <aside className="pointer-events-none hidden xl:flex pl-[20%]">
+          <Ladder side="right" />
+        </aside>
+      </div>
+    </LazyMotion>
   );
 }
