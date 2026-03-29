@@ -121,6 +121,8 @@ export function AgentOrchestration({ nodes, edges, className = "" }: AgentOrches
   const [running, setRunning] = useState(false);
   const [activeRole, setActiveRole] = useState<AgentRole | null>(null);
   const loopRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const tlRef = useRef<ReturnType<typeof createTimeline> | null>(null);
+  const stoppedRef = useRef(false);
   const reduced = useRef(false);
 
   const onInit = useCallback(() => {
@@ -140,7 +142,12 @@ export function AgentOrchestration({ nodes, edges, className = "" }: AgentOrches
   const runActivation = useCallback((onDone: () => void) => {
     if (reduced.current || !containerRef.current) { onDone(); return; }
 
-    const tl = createTimeline({ onComplete: onDone });
+    const tl = createTimeline({
+      onComplete: () => {
+        if (!stoppedRef.current) onDone();
+      },
+    });
+    tlRef.current = tl;
 
     ACTIVATION_ORDER.forEach((role, i) => {
       const nodeId = nodes.find((n) => (n.data as AgentNodeData).role === role)?.id;
@@ -189,10 +196,12 @@ export function AgentOrchestration({ nodes, edges, className = "" }: AgentOrches
   /* ── 循环控制 ── */
   const startLoop = useCallback(() => {
     if (running) return;
+    stoppedRef.current = false;
     setRunning(true);
 
     const loop = () => {
       runActivation(() => {
+        if (stoppedRef.current) return;
         loopRef.current = setTimeout(loop, 1200);
       });
     };
@@ -200,7 +209,9 @@ export function AgentOrchestration({ nodes, edges, className = "" }: AgentOrches
   }, [running, runActivation]);
 
   const stopLoop = useCallback(() => {
+    stoppedRef.current = true;
     if (loopRef.current) clearTimeout(loopRef.current);
+    tlRef.current?.pause();
     setRunning(false);
     setActiveRole(null);
     if (containerRef.current) {
