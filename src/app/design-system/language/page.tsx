@@ -5,7 +5,14 @@
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 
+import type { Metadata } from "next";
+import Image from "next/image";
 import { Section, SectionDivider, SubHeading } from "../_components/section";
+
+export const metadata: Metadata = {
+  title: "Design Language | Anti Hero Design System",
+  description: "Anti Hero 设计语言：品牌原则、术语风格、文案与素材使用规范。",
+};
 
 /* ─────────────────────────────────────────────
  * 数据
@@ -254,20 +261,24 @@ export default function DesignLanguagePage() {
                   {/* 亮色版 */}
                   <div className="border p-4 bg-white rounded-sm">
                     <p className="font-mono text-[10px] text-black/50 mb-2">stewie_light.svg</p>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
+                    <Image
                       src="/stewie_light.svg"
                       alt="Stewie ASCII Art - Light"
+                      width={640}
+                      height={360}
+                      sizes="(max-width: 768px) 100vw, 50vw"
                       className="w-full h-auto max-h-48 object-contain"
                     />
                   </div>
                   {/* 暗色版 */}
                   <div className="border p-4 bg-black rounded-sm">
                     <p className="font-mono text-[10px] text-white/50 mb-2">stewie-dark.svg</p>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
+                    <Image
                       src="/stewie-dark.svg"
                       alt="Stewie ASCII Art - Dark"
+                      width={640}
+                      height={360}
+                      sizes="(max-width: 768px) 100vw, 50vw"
                       className="w-full h-auto max-h-48 object-contain"
                     />
                   </div>
@@ -281,10 +292,12 @@ export default function DesignLanguagePage() {
                   纯文本 ASCII art，用于 CLI 输出、终端启动画面、README 头部等纯文本场景。
                 </p>
                 <div className="border border-white/10 bg-[#020303] rounded-sm overflow-hidden">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                  <Image
                     src="/stewie-ascii-art.svg"
                     alt="Stewie ASCII Art"
+                    width={960}
+                    height={540}
+                    sizes="100vw"
                     className="w-full h-auto max-h-72 object-contain"
                   />
                 </div>

@@ -1,17 +1,52 @@
 "use client";
 
 import { m, LazyMotion, domAnimation, useMotionValue, useTransform, AnimatePresence, useReducedMotion } from "motion/react";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useReducer, useCallback } from "react";
+
+type CatState = {
+  isBlinking: boolean;
+  isPetting: boolean;
+  clickCount: number;
+  isPartyMode: boolean;
+};
+
+type CatAction =
+  | { type: "setBlinking"; value: boolean }
+  | { type: "setPetting"; value: boolean }
+  | { type: "incrementClick" }
+  | { type: "startParty" }
+  | { type: "stopParty" };
+
+const initialState: CatState = {
+  isBlinking: false,
+  isPetting: false,
+  clickCount: 0,
+  isPartyMode: false,
+};
+
+function catReducer(state: CatState, action: CatAction): CatState {
+  switch (action.type) {
+    case "setBlinking":
+      return { ...state, isBlinking: action.value };
+    case "setPetting":
+      return { ...state, isPetting: action.value };
+    case "incrementClick":
+      return { ...state, clickCount: state.clickCount + 1 };
+    case "startParty":
+      return { ...state, isPartyMode: true, clickCount: 0 };
+    case "stopParty":
+      return { ...state, isPartyMode: false };
+    default:
+      return state;
+  }
+}
 
 export function InteractiveCat({ externalPartyTrigger = 0 }: { externalPartyTrigger?: number }) {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const prefersReducedMotion = useReducedMotion();
   
-  const [isBlinking, setIsBlinking] = useState(false);
-  const [isPetting, setIsPetting] = useState(false);
-  const [clickCount, setClickCount] = useState(0);
-  const [isPartyMode, setIsPartyMode] = useState(false);
+  const [state, dispatch] = useReducer(catReducer, initialState);
   const partyResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // External party mode trigger
@@ -23,10 +58,9 @@ export function InteractiveCat({ externalPartyTrigger = 0 }: { externalPartyTrig
         clearTimeout(partyResetTimer.current);
       }
 
-      // Schedule state updates asynchronously to avoid sync setState in effect.
-      setTimeout(() => setIsPartyMode(true), 0);
+      dispatch({ type: "startParty" });
       partyResetTimer.current = setTimeout(() => {
-        setIsPartyMode(false);
+        dispatch({ type: "stopParty" });
         partyResetTimer.current = null;
       }, 5000);
     }
@@ -40,24 +74,27 @@ export function InteractiveCat({ externalPartyTrigger = 0 }: { externalPartyTrig
     };
   }, []);
 
+  const triggerBlink = useCallback((delay = 0) => {
+    setTimeout(() => {
+      dispatch({ type: "setBlinking", value: true });
+      setTimeout(() => dispatch({ type: "setBlinking", value: false }), 150);
+    }, delay);
+  }, []);
+
   // Natural blinking effect
   useEffect(() => {
     let timeout: NodeJS.Timeout;
     
     const blink = () => {
-      if (!isPetting) {
-        setIsBlinking(true);
-        setTimeout(() => setIsBlinking(false), 150);
+      if (!state.isPetting) {
+        triggerBlink();
       }
 
       const nextBlink = Math.random() * 4000 + 2000;
       
       // ~20% chance of a quick double blink
-      if (Math.random() > 0.8 && !isPetting) {
-        setTimeout(() => {
-          setIsBlinking(true);
-          setTimeout(() => setIsBlinking(false), 150);
-        }, 300);
+      if (Math.random() > 0.8 && !state.isPetting) {
+        triggerBlink(300);
       }
 
       timeout = setTimeout(blink, nextBlink);
@@ -65,7 +102,7 @@ export function InteractiveCat({ externalPartyTrigger = 0 }: { externalPartyTrig
 
     timeout = setTimeout(blink, 2000);
     return () => clearTimeout(timeout);
-  }, [isPetting]);
+  }, [state.isPetting, triggerBlink]);
 
   // Eye tracking
   useEffect(() => {
@@ -85,36 +122,35 @@ export function InteractiveCat({ externalPartyTrigger = 0 }: { externalPartyTrig
   const rotateY = useTransform(mouseX, [-1, 1], [-15, 15]);
 
   const handleInteraction = useCallback(() => {
-    if (isPartyMode) return;
+    if (state.isPartyMode) return;
     
-    const newCount = clickCount + 1;
+    const newCount = state.clickCount + 1;
     if (newCount >= 7) {
-      setIsPartyMode(true);
-      setClickCount(0);
+      dispatch({ type: "startParty" });
       if (partyResetTimer.current) {
         clearTimeout(partyResetTimer.current);
       }
       partyResetTimer.current = setTimeout(() => {
-        setIsPartyMode(false);
+        dispatch({ type: "stopParty" });
         partyResetTimer.current = null;
       }, 5000);
     } else {
-      setClickCount(newCount);
+      dispatch({ type: "incrementClick" });
     }
-  }, [clickCount, isPartyMode]);
+  }, [state.clickCount, state.isPartyMode]);
 
   // Path variations
-  const leftEyePath = isPetting 
+  const leftEyePath = state.isPetting 
     ? "M 6.5 14 Q 8 12 9.5 14" // Happy eye arc
-    : (isBlinking ? "M 8 14 v 0.1" : "M 8 13.5 v 1");
+    : (state.isBlinking ? "M 8 14 v 0.1" : "M 8 13.5 v 1");
 
-  const rightEyePath = isPetting 
+  const rightEyePath = state.isPetting 
     ? "M 14.5 14 Q 16 12 17.5 14" // Happy eye arc
-    : (isBlinking ? "M 16 14 v 0.1" : "M 16 13.5 v 1");
+    : (state.isBlinking ? "M 16 14 v 0.1" : "M 16 13.5 v 1");
 
   // Shared styles
-  const strokeColor = isPartyMode ? "url(#party-gradient)" : "currentColor";
-  const baseColorClass = isPartyMode ? "" : "text-foreground transition-colors duration-300";
+  const strokeColor = state.isPartyMode ? "url(#party-gradient)" : "currentColor";
+  const baseColorClass = state.isPartyMode ? "" : "text-foreground transition-colors duration-300";
 
   return (
     <div 
@@ -122,13 +158,13 @@ export function InteractiveCat({ externalPartyTrigger = 0 }: { externalPartyTrig
       style={{ perspective: 1000 }}
       role="img"
       aria-label="Interactive cat illustration"
-      onMouseDown={() => { setIsPetting(true); handleInteraction(); }}
-      onMouseUp={() => setIsPetting(false)}
-      onMouseLeave={() => setIsPetting(false)}
+      onMouseDown={() => { dispatch({ type: "setPetting", value: true }); handleInteraction(); }}
+      onMouseUp={() => dispatch({ type: "setPetting", value: false })}
+      onMouseLeave={() => dispatch({ type: "setPetting", value: false })}
     >
       <LazyMotion features={domAnimation}>
       <AnimatePresence>
-        {isPetting && (
+        {state.isPetting && (
           <m.div
             initial={{ opacity: 0, y: 0, scale: 0.5 }}
             animate={prefersReducedMotion ? { opacity: 1, y: -20, scale: 1 } : { opacity: 1, y: -100, scale: 1.2 }}
@@ -184,7 +220,7 @@ export function InteractiveCat({ externalPartyTrigger = 0 }: { externalPartyTrig
           <path
             d="M12 5c.67 0 1.35.09 2 .26 1.78-2 5.03-2.84 6.42-2.26 1.4.58-.42 7-.42 7 .57 1.07 1 2.24 1 3.44C21 17.9 16.97 21 12 21s-9-3-9-7.56c0-1.25.5-2.4 1-3.44 0 0-1.89-6.42-.5-7 1.39-.58 4.72.23 6.5 2.23A9.04 9.04 0 0 1 12 5Z"
             stroke={strokeColor}
-            className={isPartyMode ? "" : "text-foreground"}
+            className={state.isPartyMode ? "" : "text-foreground"}
           />
 
           {/* Left Eye */}
@@ -210,7 +246,7 @@ export function InteractiveCat({ externalPartyTrigger = 0 }: { externalPartyTrig
           {/* Nose/Mouth (Filled but retaining rounded strokes) */}
           <path
             d="M11.25 16.25h1.5L12 17l-.75-.75Z"
-            fill={isPartyMode ? "url(#party-gradient)" : "currentColor"}
+            fill={state.isPartyMode ? "url(#party-gradient)" : "currentColor"}
             stroke={strokeColor}
             strokeWidth="0.5"
             className={baseColorClass}

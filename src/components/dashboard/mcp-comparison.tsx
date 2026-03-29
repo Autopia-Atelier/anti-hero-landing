@@ -60,9 +60,9 @@ export function McpComparison({
             <div className="p-3 bg-[var(--severity-critical)]/[0.03]">
               <p className="font-mono text-[9px] text-[var(--severity-critical)] mb-2">LLM RECEIVES</p>
               <p className="text-xs leading-relaxed">{tool.llmReceived}</p>
-              {tool.hiddenDirectives.map((d, i) => (
+              {tool.hiddenDirectives.map((d) => (
                 <p
-                  key={i}
+                  key={`${tool.name}:${d}`}
                   className="text-xs mt-1 px-1.5 py-0.5 bg-[var(--severity-critical)]/10 text-[var(--severity-critical)] font-mono border-l-2 border-[var(--severity-critical)]"
                 >
                   {d}

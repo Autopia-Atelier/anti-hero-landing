@@ -70,8 +70,8 @@ export function SkillSupplyChain({
             )}
           </div>
           <div className="divide-y">
-            {r.findings.map((f, i) => (
-              <div key={i} className="px-4 py-2.5 flex gap-3">
+            {r.findings.map((f) => (
+              <div key={`${f.severity}:${f.title}:${f.file ?? ""}:${f.line ?? 0}`} className="px-4 py-2.5 flex gap-3">
                 <span className={`shrink-0 font-mono text-[9px] px-1.5 py-px border self-start mt-0.5 ${SEV_STYLE[f.severity]}`}>
                   {f.severity.toUpperCase()}
                 </span>
@@ -92,7 +92,7 @@ export function SkillSupplyChain({
               <p className="font-mono text-[9px] text-muted-foreground mb-2">SUPPLY CHAIN TIMELINE</p>
               <div className="flex items-center gap-1">
                 {r.versions.map((v, i) => (
-                  <div key={i} className="flex items-center gap-1">
+                  <div key={`${v.version}:${v.status}`} className="flex items-center gap-1">
                     {i > 0 && <span className="text-muted-foreground text-[10px]">→</span>}
                     <span className={`font-mono text-[9px] px-1.5 py-0.5 ${VER_BG[v.status]}`}>
                       {v.version}
@@ -129,8 +129,8 @@ export function FixControlPoints({
 }) {
   return (
     <div className={`border divide-y ${className}`}>
-      {points.map((p, i) => (
-        <div key={i} className="px-4 py-3 flex gap-3">
+      {points.map((p) => (
+        <div key={`${p.file}:${p.line}:${p.description}`} className="px-4 py-3 flex gap-3">
           <span className={`shrink-0 font-mono text-[9px] px-1.5 py-px border self-start mt-0.5 ${SEV_STYLE[p.severity]}`}>
             {p.severity.toUpperCase()}
           </span>

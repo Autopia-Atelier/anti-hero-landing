@@ -5,7 +5,13 @@
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 
+import type { Metadata } from "next";
 import { Section, SectionDivider, SubHeading } from "../_components/section";
+
+export const metadata: Metadata = {
+  title: "Maintenance | Anti Hero Design System",
+  description: "Anti Hero 设计系统维护页：文档规范、流程与贡献指南。",
+};
 
 /* ─────────────────────────────────────────────
  * 页面

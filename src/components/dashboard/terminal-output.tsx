@@ -14,6 +14,7 @@ import { animate, stagger } from "animejs";
  * ───────────────────────────────────────────── */
 
 export type LogLine = {
+  id?: string;
   prefix: "+" | "!" | "~" | "*" | ">" | "-";
   text: string;
 };
@@ -72,8 +73,8 @@ export function TerminalOutput({
         className="bg-[oklch(0.11_0_0)] px-4 py-3 overflow-x-auto"
       >
         <div className="font-mono text-[13px] leading-[1.7] space-y-px">
-          {lines.map((line, i) => (
-            <div key={i} data-line className="flex gap-2">
+          {lines.map((line) => (
+            <div key={line.id ?? `${line.prefix}:${line.text}`} data-line className="flex gap-2">
               <span className={`shrink-0 select-none ${PREFIX_STYLES[line.prefix] ?? "text-foreground"}`}>
                 [{line.prefix}]
               </span>

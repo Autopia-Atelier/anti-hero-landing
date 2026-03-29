@@ -11,11 +11,17 @@ import {
   Scan, Fingerprint, KeyRound, ShieldAlert, ShieldCheck,
   Skull, Siren, Radio, Radar, Network, Unplug, FileWarning,
 } from "lucide-react";
+import type { Metadata } from "next";
 import { Section, SectionDivider, SubHeading } from "../_components/section";
 import { ColorSwatch } from "../_components/color-swatch";
 import {
   SEMANTIC_COLORS, CHART_COLORS, SPACING_SCALE, RADIUS_SCALE,
 } from "../_components/nav-data";
+
+export const metadata: Metadata = {
+  title: "Foundations | Anti Hero Design System",
+  description: "Anti Hero 设计系统基础层：色彩、布局、字体、阴影、动效和图标。",
+};
 
 /* ─────────────────────────────────────────────
  * 页面

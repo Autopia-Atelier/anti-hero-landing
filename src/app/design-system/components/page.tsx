@@ -5,6 +5,7 @@
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 
+import type { Metadata } from "next";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -34,6 +35,11 @@ import Link from "next/link";
 import { Section, SectionDivider, CornerBrackets, SubHeading } from "../_components/section";
 import { ComponentCard } from "../_components/component-card";
 import { BUTTON_VARIANTS, BUTTON_SIZES, BADGE_VARIANTS } from "../_components/nav-data";
+
+export const metadata: Metadata = {
+  title: "Components | Anti Hero Design System",
+  description: "Anti Hero 设计系统组件页：基于 shadcn/ui 与 Radix 的可复用组件展示。",
+};
 
 /* ─────────────────────────────────────────────
  * 页面

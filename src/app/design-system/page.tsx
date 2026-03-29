@@ -5,9 +5,15 @@
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 
+import type { Metadata } from "next";
 import Link from "next/link";
 import { CATEGORIES } from "./_components/nav-data";
 import { CornerBrackets } from "./_components/section";
+
+export const metadata: Metadata = {
+  title: "Design System | Anti Hero",
+  description: "Anti Hero 设计系统总览：语言、基础、组件与维护规范。",
+};
 
 const CATEGORY_ICONS: Record<string, string> = {
   language: "◇",
