@@ -6,7 +6,7 @@
  */
 "use client";
 
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useState, useEffect } from "react";
 import {
   ReactFlow,
   Background,
@@ -18,7 +18,7 @@ import {
   type NodeProps,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { animate, stagger } from "animejs";
+import { animate, stagger, createTimeline } from "animejs";
 import {
   Brain, Crosshair, FlaskConical, ShieldCheck, MessageSquare, RotateCcw, Workflow,
 } from "lucide-react";
@@ -57,6 +57,11 @@ const ROLE_COLORS: Record<AgentRole, string> = {
   confidence: "var(--chart-2)",
   replay: "var(--severity-medium)",
 };
+
+/* ── 激活传播顺序（orchestrator → sub-agents 依次激活） ── */
+const ACTIVATION_ORDER: AgentRole[] = [
+  "orchestrator", "planner", "payload", "verifier", "confidence", "replay",
+];
 
 /* ─────────────────────────────────────────────
  * AgentNode — 自定义节点
@@ -113,10 +118,14 @@ export type AgentOrchestrationProps = {
 
 export function AgentOrchestration({ nodes, edges, className = "" }: AgentOrchestrationProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [running, setRunning] = useState(false);
+  const [activeRole, setActiveRole] = useState<AgentRole | null>(null);
+  const loopRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const reduced = useRef(false);
 
   const onInit = useCallback(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    if (!containerRef.current) return;
+    reduced.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced.current || !containerRef.current) return;
     const nodeEls = containerRef.current.querySelectorAll(".react-flow__node");
     animate(Array.from(nodeEls), {
       opacity: [0, 1],
@@ -127,27 +136,132 @@ export function AgentOrchestration({ nodes, edges, className = "" }: AgentOrches
     });
   }, []);
 
+  /* ── 单次激活传播 ── */
+  const runActivation = useCallback((onDone: () => void) => {
+    if (reduced.current || !containerRef.current) { onDone(); return; }
+
+    const tl = createTimeline({ onComplete: onDone });
+
+    ACTIVATION_ORDER.forEach((role, i) => {
+      const nodeId = nodes.find((n) => (n.data as AgentNodeData).role === role)?.id;
+      if (!nodeId) return;
+      const el = containerRef.current!.querySelector<HTMLElement>(`[data-id="${nodeId}"]`);
+      if (!el) return;
+
+      const color = ROLE_COLORS[role];
+
+      tl.add(
+        el,
+        {
+          scale: [1, 1.06, 1],
+          boxShadow: [
+            `0 0 0px 0px ${color}`,
+            `0 0 16px 4px ${color}`,
+            `0 0 0px 0px ${color}`,
+          ],
+          duration: 600,
+          ease: "outCubic",
+          onBegin: () => setActiveRole(role),
+        },
+        i === 0 ? 0 : `+=${i === 1 ? 200 : 150}`,
+      );
+    });
+
+    // orchestrator 最后再脉冲一次，表示收到所有结果
+    const orchId = nodes.find((n) => (n.data as AgentNodeData).role === "orchestrator")?.id;
+    const orchEl = orchId ? containerRef.current!.querySelector<HTMLElement>(`[data-id="${orchId}"]`) : null;
+    if (orchEl) {
+      tl.add(orchEl, {
+        scale: [1, 1.08, 1],
+        boxShadow: [
+          "0 0 0px 0px var(--foreground)",
+          "0 0 20px 5px var(--foreground)",
+          "0 0 0px 0px var(--foreground)",
+        ],
+        duration: 500,
+        ease: "outBack",
+        onBegin: () => setActiveRole("orchestrator"),
+        onComplete: () => setActiveRole(null),
+      }, "+=300");
+    }
+  }, [nodes]);
+
+  /* ── 循环控制 ── */
+  const startLoop = useCallback(() => {
+    if (running) return;
+    setRunning(true);
+
+    const loop = () => {
+      runActivation(() => {
+        loopRef.current = setTimeout(loop, 1200);
+      });
+    };
+    loop();
+  }, [running, runActivation]);
+
+  const stopLoop = useCallback(() => {
+    if (loopRef.current) clearTimeout(loopRef.current);
+    setRunning(false);
+    setActiveRole(null);
+    if (containerRef.current) {
+      const nodeEls = containerRef.current.querySelectorAll<HTMLElement>(".react-flow__node");
+      animate(Array.from(nodeEls), {
+        boxShadow: "0 0 0px 0px transparent",
+        duration: 200,
+        ease: "outCubic",
+      });
+    }
+  }, []);
+
+  useEffect(() => () => { if (loopRef.current) clearTimeout(loopRef.current); }, []);
+
   return (
-    <div ref={containerRef} className={`h-[420px] w-full border bg-card/50 ${className}`}>
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        nodeTypes={nodeTypes}
-        defaultEdgeOptions={defaultEdgeOptions}
-        onInit={onInit}
-        fitView
-        proOptions={{ hideAttribution: true }}
-        nodesDraggable={false}
-        nodesConnectable={false}
-        panOnDrag={false}
-        zoomOnScroll={false}
-        zoomOnPinch={false}
-        zoomOnDoubleClick={false}
-        minZoom={0.7}
-        maxZoom={1.3}
-      >
-        <Background gap={20} size={1} color="var(--border)" />
-      </ReactFlow>
+    <div className={`space-y-2 ${className}`}>
+      {/* 控制栏 */}
+      <div className="flex items-center gap-2">
+        <button
+          onClick={running ? stopLoop : startLoop}
+          className={`border px-3 py-1 font-mono text-[10px] transition-colors ${
+            running
+              ? "border-[var(--severity-medium)] text-[var(--severity-medium)] hover:bg-[var(--severity-medium)]/10"
+              : "border-[var(--severity-low)] text-[var(--severity-low)] hover:bg-[var(--severity-low)]/10"
+          }`}
+        >
+          {running ? "⏹ STOP" : "▶ SIMULATE"}
+        </button>
+        {activeRole && (
+          <span className="font-mono text-[10px] text-muted-foreground">
+            ACTIVE: <span style={{ color: ROLE_COLORS[activeRole] }}>{activeRole.toUpperCase()}</span>
+          </span>
+        )}
+        {!activeRole && !running && (
+          <span className="font-mono text-[10px] text-muted-foreground">
+            SIMULATE 播放 Agent 激活传播循环
+          </span>
+        )}
+      </div>
+
+      <div ref={containerRef} className="h-[420px] w-full border bg-card/50">
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          nodeTypes={nodeTypes}
+          defaultEdgeOptions={defaultEdgeOptions}
+          onInit={onInit}
+          fitView
+          proOptions={{ hideAttribution: true }}
+          nodesDraggable={false}
+          nodesConnectable={false}
+          panOnDrag={false}
+          zoomOnScroll={false}
+          zoomOnPinch={false}
+          zoomOnDoubleClick={false}
+          minZoom={0.7}
+          maxZoom={1.3}
+        >
+          <Background gap={20} size={1} color="var(--border)" />
+        </ReactFlow>
+      </div>
     </div>
   );
 }

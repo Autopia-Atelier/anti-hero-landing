@@ -6,7 +6,7 @@
  */
 "use client";
 
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 import {
   ReactFlow,
   Background,
@@ -18,7 +18,7 @@ import {
   type NodeProps,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { animate, stagger } from "animejs";
+import { animate, stagger, createTimeline } from "animejs";
 import {
   Cloud, Cpu, FileCheck, RotateCcw, ArrowRight,
 } from "lucide-react";
@@ -61,6 +61,15 @@ const PHASE_BG: Record<PhaseType, string> = {
   step: "bg-muted/30",
 };
 
+/* ── 阶段分组标签 ── */
+const PHASE_LABELS: Record<PhaseType, string> = {
+  cloud: "CLOUD",
+  local: "LOCAL",
+  report: "REPORT",
+  evolution: "EVOLUTION",
+  step: "",
+};
+
 /* ─────────────────────────────────────────────
  * PipelineNode — 自定义节点
  * ───────────────────────────────────────────── */
@@ -92,6 +101,35 @@ function PipelineNode({ data }: NodeProps) {
 }
 
 /* ─────────────────────────────────────────────
+ * BFS 顺序 — 按边关系确定流动顺序
+ * ───────────────────────────────────────────── */
+
+function bfsOrder(nodeIds: string[], edges: Edge[]): string[] {
+  const adj = new Map(nodeIds.map((id) => [id, [] as string[]]));
+  const inDegree = new Map(nodeIds.map((id) => [id, 0]));
+
+  for (const e of edges) {
+    adj.get(e.source)?.push(e.target);
+    inDegree.set(e.target, (inDegree.get(e.target) ?? 0) + 1);
+  }
+
+  const queue = nodeIds.filter((id) => inDegree.get(id) === 0);
+  const result: string[] = [];
+
+  while (queue.length) {
+    const node = queue.shift()!;
+    result.push(node);
+    for (const next of adj.get(node) ?? []) {
+      const deg = (inDegree.get(next) ?? 1) - 1;
+      inDegree.set(next, deg);
+      if (deg === 0) queue.push(next);
+    }
+  }
+
+  return result.length === nodeIds.length ? result : nodeIds;
+}
+
+/* ─────────────────────────────────────────────
  * ExecutionPipeline — 图容器
  * ───────────────────────────────────────────── */
 
@@ -111,10 +149,13 @@ export type ExecutionPipelineProps = {
 
 export function ExecutionPipeline({ nodes, edges, className = "" }: ExecutionPipelineProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [status, setStatus] = useState<"idle" | "running" | "done">("idle");
+  const [currentPhase, setCurrentPhase] = useState<string>("");
+  const reduced = useRef(false);
 
   const onInit = useCallback(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    if (!containerRef.current) return;
+    reduced.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced.current || !containerRef.current) return;
     const nodeEls = containerRef.current.querySelectorAll(".react-flow__node");
     animate(Array.from(nodeEls), {
       opacity: [0, 1],
@@ -125,31 +166,123 @@ export function ExecutionPipeline({ nodes, edges, className = "" }: ExecutionPip
     });
   }, []);
 
+  /* ── 任务流动动画 ── */
+  const runFlow = useCallback(() => {
+    if (status === "running" || reduced.current || !containerRef.current) return;
+    setStatus("running");
+    setCurrentPhase("");
+
+    // 先重置所有节点
+    const allEls = containerRef.current.querySelectorAll<HTMLElement>(".react-flow__node");
+    animate(Array.from(allEls), {
+      boxShadow: "0 0 0px 0px transparent",
+      opacity: 0.4,
+      duration: 200,
+      ease: "outCubic",
+    });
+
+    const order = bfsOrder(nodes.map((n) => n.id), edges);
+    const tl = createTimeline({
+      onComplete: () => {
+        setStatus("done");
+        setCurrentPhase("COMPLETE");
+        // 全部恢复正常亮度
+        animate(Array.from(allEls), {
+          opacity: 1,
+          duration: 300,
+          ease: "outCubic",
+        });
+      },
+    });
+
+    order.forEach((nodeId, i) => {
+      const el = containerRef.current!.querySelector<HTMLElement>(`[data-id="${nodeId}"]`);
+      if (!el) return;
+
+      const nodeData = nodes.find((n) => n.id === nodeId)?.data as PipelineNodeData | undefined;
+      const phase = nodeData?.phase ?? "step";
+      const color = PHASE_COLORS[phase];
+      const phaseLabel = PHASE_LABELS[phase] || nodeData?.label || "";
+
+      tl.add(el, {
+        opacity: [0.4, 1],
+        translateX: [i === 0 ? 0 : -4, 0],
+        boxShadow: [
+          `0 0 0px 0px ${color}`,
+          `0 0 12px 3px ${color}`,
+          `0 0 4px 1px ${color}`,
+        ],
+        duration: 400,
+        ease: "outCubic",
+        onBegin: () => setCurrentPhase(phaseLabel),
+      }, i * 220);
+    });
+  }, [status, nodes, edges]);
+
+  /* ── 重置 ── */
+  const reset = useCallback(() => {
+    if (!containerRef.current) return;
+    const allEls = containerRef.current.querySelectorAll<HTMLElement>(".react-flow__node");
+    animate(Array.from(allEls), {
+      opacity: 1,
+      boxShadow: "0 0 0px 0px transparent",
+      duration: 250,
+      ease: "outCubic",
+    });
+    setStatus("idle");
+    setCurrentPhase("");
+  }, []);
+
   return (
-    <div ref={containerRef} className={`h-[350px] w-full border bg-card/50 ${className}`}>
-      <ReactFlow
-        nodes={nodes.map((n) => ({
-          ...n,
-          sourcePosition: Position.Right,
-          targetPosition: Position.Left,
-        }))}
-        edges={edges}
-        nodeTypes={nodeTypes}
-        defaultEdgeOptions={defaultEdgeOptions}
-        onInit={onInit}
-        fitView
-        proOptions={{ hideAttribution: true }}
-        nodesDraggable={false}
-        nodesConnectable={false}
-        panOnDrag={false}
-        zoomOnScroll={false}
-        zoomOnPinch={false}
-        zoomOnDoubleClick={false}
-        minZoom={0.6}
-        maxZoom={1.3}
-      >
-        <Background gap={20} size={1} color="var(--border)" />
-      </ReactFlow>
+    <div className={`space-y-2 ${className}`}>
+      {/* 控制栏 */}
+      <div className="flex items-center gap-2">
+        <button
+          onClick={runFlow}
+          disabled={status === "running"}
+          className="border border-[var(--chart-1)] px-3 py-1 font-mono text-[10px] text-[var(--chart-1)] hover:bg-[var(--chart-1)]/10 disabled:opacity-40 transition-colors"
+        >
+          {status === "running" ? "EXECUTING…" : "▶ EXECUTE"}
+        </button>
+        <button
+          onClick={reset}
+          className="border border-border px-3 py-1 font-mono text-[10px] text-muted-foreground hover:bg-muted/30 transition-colors"
+        >
+          RESET
+        </button>
+        <span className="font-mono text-[10px] ml-auto">
+          {currentPhase
+            ? <span style={{ color: "var(--severity-info)" }}>{currentPhase}</span>
+            : <span className="text-muted-foreground">EXECUTE 播放任务流动</span>
+          }
+        </span>
+      </div>
+
+      <div ref={containerRef} className="h-[350px] w-full border bg-card/50">
+        <ReactFlow
+          nodes={nodes.map((n) => ({
+            ...n,
+            sourcePosition: Position.Right,
+            targetPosition: Position.Left,
+          }))}
+          edges={edges}
+          nodeTypes={nodeTypes}
+          defaultEdgeOptions={defaultEdgeOptions}
+          onInit={onInit}
+          fitView
+          proOptions={{ hideAttribution: true }}
+          nodesDraggable={false}
+          nodesConnectable={false}
+          panOnDrag={false}
+          zoomOnScroll={false}
+          zoomOnPinch={false}
+          zoomOnDoubleClick={false}
+          minZoom={0.6}
+          maxZoom={1.3}
+        >
+          <Background gap={20} size={1} color="var(--border)" />
+        </ReactFlow>
+      </div>
     </div>
   );
 }
