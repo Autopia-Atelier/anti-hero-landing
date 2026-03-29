@@ -274,27 +274,23 @@ export default function DesignLanguagePage() {
                 </div>
               </div>
 
-              {/* ASCII Text 版 */}
+              {/* ASCII Art SVG 版 */}
               <div className="border-t pt-4">
-                <p className="font-mono text-[10px] text-muted-foreground mb-3">ASCII TEXT · 终端/CLI 用</p>
+                <p className="font-mono text-[10px] text-muted-foreground mb-3">ASCII ART · 终端/CLI 用</p>
                 <p className="text-xs text-muted-foreground mb-4">
                   纯文本 ASCII art，用于 CLI 输出、终端启动画面、README 头部等纯文本场景。
                 </p>
-                <div className="border bg-black p-4 overflow-x-auto">
-                  <pre className="text-[4px] leading-[5px] text-green-400 font-mono whitespace-pre select-all">
-{`                                                     ~~_         |,..,:.
-                                                   ,,▓-l,.,iI;:i,IIi. ,/:i
-                                      :.,,  i,;|~I>█▒▌▀▄▄▄▄▄▁▁▀~▀▄▁▄▄▄▄▀▐░▓#>=!;I,:l_/ :
-                                   .. ;.l-#░▄▄▁▁#%▁▁▁▁▁▁▁▁▁▁▁▁▄▄▁▁▁▁▁▁▁▁▁▁▁▁▁▁▄<@░@+|/\\.,
-                                   l=▓▀▁▁▁▁▁▁▁▁▁▄▄▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▐▐▁▁▁▁▁▄▀▓-|::
-                         i,    i-@|▄▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▐>;:;,,.
-                                         :l>▌▄▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▄░+i.
-                                                 l  :il\\++>*%██▌▌▌▌▌▒@*=_|\\ i`}
-                  </pre>
+                <div className="border border-white/10 bg-[#020303] rounded-sm overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/stewie-ascii-art.svg"
+                    alt="Stewie ASCII Art"
+                    className="w-full h-auto max-h-72 object-contain"
+                  />
                 </div>
                 <p className="text-[10px] text-muted-foreground mt-2">
-                  完整文件：<code className="bg-muted px-1 py-0.5">inbox/stewie-ascii-art.txt</code>
-                  {" · "}SVG 版：<code className="bg-muted px-1 py-0.5">inbox/stewie-ascii-art.svg</code>
+                  纯文本版：<code className="bg-muted px-1 py-0.5">public/stewie-ascii-art.txt</code>
+                  {" · "}SVG 版：<code className="bg-muted px-1 py-0.5">public/stewie-ascii-art.svg</code>
                 </p>
               </div>
 
@@ -310,8 +306,8 @@ export default function DesignLanguagePage() {
                   {[
                     { file: "public/stewie_light.svg", format: "SVG · ASCII text 渲染", usage: "Hero 区域 · 亮色模式" },
                     { file: "public/stewie-dark.svg", format: "SVG · ASCII text 渲染", usage: "Hero 区域 · 暗色模式" },
-                    { file: "inbox/stewie-ascii-art.txt", format: "纯文本 ASCII art", usage: "CLI · 终端 · README" },
-                    { file: "inbox/stewie-ascii-art.svg", format: "SVG · 高精度 ASCII art", usage: "印刷 · 高分辨率场景" },
+                    { file: "public/stewie-ascii-art.txt", format: "纯文本 ASCII art", usage: "CLI · 终端 · README" },
+                    { file: "public/stewie-ascii-art.svg", format: "SVG · 高精度 ASCII art", usage: "印刷 · 高分辨率场景" },
                   ].map((a) => (
                     <div key={a.file} className="grid grid-cols-[1fr_1fr_1.5fr] gap-4 px-4 py-2.5">
                       <code className="font-mono text-xs">{a.file}</code>
