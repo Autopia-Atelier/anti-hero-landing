@@ -1,6 +1,6 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { db } from "@/db";
+import { getDb } from "@/db";
 import { Resend } from "resend";
 import WelcomeEmail from "@/components/email/email";
 
@@ -16,7 +16,7 @@ function createAuth() {
         clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
       },
     },
-    database: drizzleAdapter(db, {
+    database: drizzleAdapter(getDb(), {
       provider: "pg",
     }),
     databaseHooks: {
