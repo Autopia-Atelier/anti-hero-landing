@@ -5,12 +5,13 @@
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 
-import type { AttackNodeData } from "@/components/dashboard/attack-node";
+import type { AttackNodeData } from "@/components/dashboard/attack-chain-graph";
+import type { AgentNodeData } from "@/components/dashboard/agent-orchestration";
+import type { PipelineNodeData } from "@/components/dashboard/execution-pipeline";
 import type { LogLine } from "@/components/dashboard/terminal-output";
 import type { McpTool } from "@/components/dashboard/mcp-comparison";
-import type { SkillScanResult } from "@/components/dashboard/skill-supply-chain";
+import type { SkillScanResult, FixPoint } from "@/components/dashboard/skill-supply-chain";
 import type { Metric } from "@/components/dashboard/metric-card-grid";
-import type { FixPoint } from "@/components/dashboard/fix-control-points";
 import type { Node, Edge } from "@xyflow/react";
 
 /* ─────────────────────────────────────────────
@@ -173,4 +174,65 @@ export const FIX_POINTS: FixPoint[] = [
     description: "系统提示词缺少安全边界声明",
     suggestion: "添加 tool usage boundary 指令",
   },
+];
+
+/* ─────────────────────────────────────────────
+ * Agent Orchestration — 五 Agent 协作
+ * ───────────────────────────────────────────── */
+
+export const AGENT_NODES: Node<AgentNodeData>[] = [
+  { id: "orch", position: { x: 280, y: 0 }, type: "agent", data: { label: "Orchestrator", role: "orchestrator", description: "中枢调度，复杂度路由", active: true } },
+  { id: "planner", position: { x: 0, y: 120 }, type: "agent", data: { label: "Planner", role: "planner", description: "TTP 匹配 → 测试计划" } },
+  { id: "payload", position: { x: 170, y: 120 }, type: "agent", data: { label: "Payload", role: "payload", description: "生成攻击载荷 (+18pp)" } },
+  { id: "verifier", position: { x: 340, y: 120 }, type: "agent", data: { label: "Verifier", role: "verifier", description: "独立验证 PoC (91-98%)" } },
+  { id: "confidence", position: { x: 510, y: 120 }, type: "agent", data: { label: "Confidence", role: "confidence", description: "生成置信度解释" } },
+  { id: "replay", position: { x: 680, y: 120 }, type: "agent", data: { label: "Replay", role: "replay", description: "固化可复现资产" } },
+];
+
+export const AGENT_EDGES: Edge[] = [
+  { id: "o-pl", source: "orch", target: "planner", label: "计划" },
+  { id: "o-pa", source: "orch", target: "payload", label: "载荷" },
+  { id: "o-v", source: "orch", target: "verifier", label: "验证" },
+  { id: "o-c", source: "orch", target: "confidence", label: "解释" },
+  { id: "o-r", source: "orch", target: "replay", label: "固化" },
+  { id: "pl-pa", source: "planner", target: "payload", style: { stroke: "var(--chart-1)", strokeDasharray: "3 3" } },
+  { id: "pa-v", source: "payload", target: "verifier", style: { stroke: "var(--severity-critical)", strokeDasharray: "3 3" } },
+  { id: "v-c", source: "verifier", target: "confidence", style: { stroke: "var(--severity-low)", strokeDasharray: "3 3" } },
+  { id: "v-r", source: "verifier", target: "replay", style: { stroke: "var(--severity-low)", strokeDasharray: "3 3" } },
+];
+
+/* ─────────────────────────────────────────────
+ * Execution Pipeline — 三阶段流水线
+ * ───────────────────────────────────────────── */
+
+export const PIPELINE_NODES: Node<PipelineNodeData>[] = [
+  /* Phase 1: Cloud */
+  { id: "p1", position: { x: 0, y: 0 }, type: "pipeline", data: { label: "stewie run", phase: "step", description: "CLI 入口" } },
+  { id: "p2", position: { x: 160, y: 0 }, type: "pipeline", data: { label: "项目指纹", phase: "step", description: "框架 + 工具 + 提示词" } },
+  { id: "p3", position: { x: 340, y: 0 }, type: "pipeline", data: { label: "Attack Brain", phase: "cloud", description: "五 Agent 协作生成策略" } },
+  { id: "p4", position: { x: 540, y: 0 }, type: "pipeline", data: { label: "探测序列", phase: "step", description: "下载到本地" } },
+  /* Phase 2: Local */
+  { id: "p5", position: { x: 0, y: 100 }, type: "pipeline", data: { label: "Mock Adapter", phase: "local", description: "拦截工具调用" } },
+  { id: "p6", position: { x: 180, y: 100 }, type: "pipeline", data: { label: "三级递进攻击", phase: "local", description: "外泄→投毒→级联" } },
+  { id: "p7", position: { x: 380, y: 100 }, type: "pipeline", data: { label: "Verifier", phase: "local", description: "独立验证 + 回滚" } },
+  /* Phase 3: Report */
+  { id: "p8", position: { x: 0, y: 200 }, type: "pipeline", data: { label: "Proof Payload", phase: "report", description: "写入 HARMLESS MARKER" } },
+  { id: "p9", position: { x: 200, y: 200 }, type: "pipeline", data: { label: "Result Storage", phase: "report", description: "上传结果（无源码）" } },
+  { id: "p10", position: { x: 400, y: 200 }, type: "pipeline", data: { label: "Dashboard", phase: "report", description: "攻击链可视化" } },
+  /* Evolution */
+  { id: "p11", position: { x: 600, y: 200 }, type: "pipeline", data: { label: "Evolution", phase: "evolution", description: "PCEC 六步循环" } },
+];
+
+export const PIPELINE_EDGES: Edge[] = [
+  { id: "pe1", source: "p1", target: "p2" },
+  { id: "pe2", source: "p2", target: "p3" },
+  { id: "pe3", source: "p3", target: "p4" },
+  { id: "pe4", source: "p4", target: "p5", style: { stroke: "var(--chart-1)" }, label: "Local" },
+  { id: "pe5", source: "p5", target: "p6" },
+  { id: "pe6", source: "p6", target: "p7" },
+  { id: "pe7", source: "p7", target: "p8", style: { stroke: "var(--severity-low)" }, label: "Report" },
+  { id: "pe8", source: "p8", target: "p9" },
+  { id: "pe9", source: "p9", target: "p10" },
+  { id: "pe10", source: "p10", target: "p11" },
+  { id: "pe11", source: "p11", target: "p3", style: { stroke: "var(--severity-medium)", strokeDasharray: "4 4" }, label: "进化" },
 ];

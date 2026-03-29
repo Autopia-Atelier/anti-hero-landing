@@ -1,7 +1,7 @@
 /**
  * [INPUT]: 依赖 @xyflow/react, lucide-react, animejs
- * [OUTPUT]: AttackChainGraph 攻击链有向图 + AttackNode 自定义节点
- * [POS]: dashboard 的核心视图 1，React Flow 封装
+ * [OUTPUT]: ExecutionPipeline 三阶段执行流水线 + Evolution 循环
+ * [POS]: dashboard 的任务执行过程可视化
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 "use client";
@@ -20,90 +20,96 @@ import {
 import "@xyflow/react/dist/style.css";
 import { animate, stagger } from "animejs";
 import {
-  Bug, Terminal, Unplug, FileWarning, Shield, Zap,
+  Cloud, Cpu, FileCheck, RotateCcw, ArrowRight,
 } from "lucide-react";
 
 /* ─────────────────────────────────────────────
- * 类型 & 映射
+ * 类型
  * ───────────────────────────────────────────── */
 
-export type Severity = "critical" | "high" | "medium" | "low" | "info";
+export type PhaseType = "cloud" | "local" | "report" | "evolution" | "step";
 
-export type AttackNodeData = {
+export type PipelineNodeData = {
   label: string;
-  severity: Severity;
-  type: "injection" | "tool" | "dataflow" | "exfil" | "defense";
+  phase: PhaseType;
   description?: string;
 };
 
-const SEVERITY_STYLES: Record<Severity, string> = {
-  critical: "border-l-[var(--severity-critical)] text-[var(--severity-critical)]",
-  high: "border-l-[var(--severity-high)] text-[var(--severity-high)]",
-  medium: "border-l-[var(--severity-medium)] text-[var(--severity-medium)]",
-  low: "border-l-[var(--severity-low)] text-[var(--severity-low)]",
-  info: "border-l-[var(--severity-info)] text-[var(--severity-info)]",
-};
+/* ── 阶段映射 ── */
 
-const SEVERITY_LABELS: Record<Severity, string> = {
-  critical: "CRITICAL", high: "HIGH", medium: "MEDIUM", low: "LOW", info: "INFO",
-};
-
-const TYPE_ICONS = {
-  injection: Bug, tool: Terminal, dataflow: Unplug,
-  exfil: FileWarning, defense: Shield,
+const PHASE_ICONS = {
+  cloud: Cloud,
+  local: Cpu,
+  report: FileCheck,
+  evolution: RotateCcw,
+  step: ArrowRight,
 } as const;
 
+const PHASE_COLORS: Record<PhaseType, string> = {
+  cloud: "var(--chart-2)",
+  local: "var(--chart-1)",
+  report: "var(--severity-low)",
+  evolution: "var(--severity-medium)",
+  step: "var(--muted-foreground)",
+};
+
+const PHASE_BG: Record<PhaseType, string> = {
+  cloud: "bg-[var(--chart-2)]/5",
+  local: "bg-[var(--chart-1)]/5",
+  report: "bg-[var(--severity-low)]/5",
+  evolution: "bg-[var(--severity-medium)]/5",
+  step: "bg-muted/30",
+};
+
 /* ─────────────────────────────────────────────
- * AttackNode — 自定义节点
+ * PipelineNode — 自定义节点
  * ───────────────────────────────────────────── */
 
-function AttackNode({ data }: NodeProps) {
-  const d = data as unknown as AttackNodeData;
-  const Icon = TYPE_ICONS[d.type] ?? Zap;
-  const severity = d.severity ?? "info";
+function PipelineNode({ data }: NodeProps) {
+  const d = data as unknown as PipelineNodeData;
+  const Icon = PHASE_ICONS[d.phase] ?? ArrowRight;
+  const color = PHASE_COLORS[d.phase];
+  const isPhaseHeader = d.phase !== "step";
 
   return (
-    <div className={`border border-border border-l-[3px] bg-card px-3 py-2 min-w-[140px] ${SEVERITY_STYLES[severity]}`}>
+    <div
+      className={`border px-3 py-2 ${isPhaseHeader ? "min-w-[160px]" : "min-w-[130px]"} ${PHASE_BG[d.phase]}`}
+      style={{ borderColor: color }}
+    >
       <Handle type="target" position={Position.Left} className="!bg-muted-foreground !w-1.5 !h-1.5 !border-0" />
       <div className="flex items-center gap-2">
-        <Icon className="size-3.5 shrink-0" />
-        <span className="font-mono text-xs font-medium text-foreground">{d.label}</span>
-      </div>
-      <div className="flex items-center gap-2 mt-1">
-        <span
-          className="font-mono text-[9px] px-1 py-px border"
-          style={{ borderColor: `var(--severity-${severity})`, color: `var(--severity-${severity})` }}
-        >
-          {SEVERITY_LABELS[severity]}
+        <Icon className="size-3.5 shrink-0" style={{ color }} />
+        <span className={`font-mono text-xs ${isPhaseHeader ? "font-medium" : ""}`}>
+          {d.label}
         </span>
-        {d.description && (
-          <span className="text-[10px] text-muted-foreground truncate">{d.description}</span>
-        )}
       </div>
+      {d.description && (
+        <p className="text-[9px] text-muted-foreground mt-1">{d.description}</p>
+      )}
       <Handle type="source" position={Position.Right} className="!bg-muted-foreground !w-1.5 !h-1.5 !border-0" />
     </div>
   );
 }
 
 /* ─────────────────────────────────────────────
- * AttackChainGraph — 有向图容器
+ * ExecutionPipeline — 图容器
  * ───────────────────────────────────────────── */
 
-const nodeTypes: NodeTypes = { attack: AttackNode } as unknown as NodeTypes;
+const nodeTypes: NodeTypes = { pipeline: PipelineNode } as unknown as NodeTypes;
 
 const defaultEdgeOptions = {
   type: "default",
   animated: true,
-  style: { stroke: "var(--muted-foreground)", strokeWidth: 1.5, strokeDasharray: "6 3" },
+  style: { stroke: "var(--muted-foreground)", strokeWidth: 1.5, strokeDasharray: "5 3" },
 };
 
-export type AttackChainProps = {
-  nodes: Node<AttackNodeData>[];
+export type ExecutionPipelineProps = {
+  nodes: Node<PipelineNodeData>[];
   edges: Edge[];
   className?: string;
 };
 
-export function AttackChainGraph({ nodes, edges, className = "" }: AttackChainProps) {
+export function ExecutionPipeline({ nodes, edges, className = "" }: ExecutionPipelineProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const onInit = useCallback(() => {
@@ -112,15 +118,15 @@ export function AttackChainGraph({ nodes, edges, className = "" }: AttackChainPr
     const nodeEls = containerRef.current.querySelectorAll(".react-flow__node");
     animate(Array.from(nodeEls), {
       opacity: [0, 1],
-      translateY: [12, 0],
-      delay: stagger(80),
+      translateX: [-16, 0],
+      delay: stagger(60),
       duration: 400,
       ease: "outCubic",
     });
   }, []);
 
   return (
-    <div ref={containerRef} className={`h-[400px] w-full border bg-card/50 ${className}`}>
+    <div ref={containerRef} className={`h-[350px] w-full border bg-card/50 ${className}`}>
       <ReactFlow
         nodes={nodes.map((n) => ({
           ...n,
@@ -139,8 +145,8 @@ export function AttackChainGraph({ nodes, edges, className = "" }: AttackChainPr
         zoomOnScroll={false}
         zoomOnPinch={false}
         zoomOnDoubleClick={false}
-        minZoom={0.8}
-        maxZoom={1.2}
+        minZoom={0.6}
+        maxZoom={1.3}
       >
         <Background gap={20} size={1} color="var(--border)" />
       </ReactFlow>

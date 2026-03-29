@@ -62,6 +62,8 @@ export const CATEGORIES = [
     title: "Dashboard",
     desc: "攻击链可视化、日志、指标、供应链",
     sections: [
+      { id: "agent-orchestration", label: "Agent Orchestration" },
+      { id: "execution-pipeline", label: "Execution Pipeline" },
       { id: "attack-chain", label: "Attack Chain" },
       { id: "terminal", label: "Terminal Output" },
       { id: "mcp-comparison", label: "MCP Comparison" },

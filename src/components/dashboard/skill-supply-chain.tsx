@@ -1,13 +1,27 @@
 /**
- * [INPUT]: 无外部依赖
- * [OUTPUT]: SkillSupplyChain Skills 供应链扫描结果组件
- * [POS]: dashboard 的视图 2b，展示 SKILL.md 威胁
+ * [INPUT]: 依赖 attack-chain-graph (Severity 类型)
+ * [OUTPUT]: SkillSupplyChain + FixControlPoints 扫描结果展示
+ * [POS]: dashboard 的视图 2b + 视图 4，威胁扫描与修复点
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 
-import type { Severity } from "./attack-node";
+import type { Severity } from "./attack-chain-graph";
 
-/* ── 类型 ── */
+/* ─────────────────────────────────────────────
+ * 共享样式
+ * ───────────────────────────────────────────── */
+
+const SEV_STYLE: Record<Severity, string> = {
+  critical: "border-[var(--severity-critical)] text-[var(--severity-critical)]",
+  high: "border-[var(--severity-high)] text-[var(--severity-high)]",
+  medium: "border-[var(--severity-medium)] text-[var(--severity-medium)]",
+  low: "border-[var(--severity-low)] text-[var(--severity-low)]",
+  info: "border-[var(--severity-info)] text-[var(--severity-info)]",
+};
+
+/* ─────────────────────────────────────────────
+ * SkillSupplyChain — Skills 供应链扫描
+ * ───────────────────────────────────────────── */
 
 export type SkillFinding = {
   severity: Severity;
@@ -30,23 +44,11 @@ export type SkillScanResult = {
   toxicMatch?: boolean;
 };
 
-/* ── 严重性样式 ── */
-
-const SEV_STYLE: Record<Severity, string> = {
-  critical: "border-[var(--severity-critical)] text-[var(--severity-critical)]",
-  high: "border-[var(--severity-high)] text-[var(--severity-high)]",
-  medium: "border-[var(--severity-medium)] text-[var(--severity-medium)]",
-  low: "border-[var(--severity-low)] text-[var(--severity-low)]",
-  info: "border-[var(--severity-info)] text-[var(--severity-info)]",
-};
-
 const VER_BG: Record<string, string> = {
   clean: "bg-[var(--severity-low)]/10 text-[var(--severity-low)]",
   suspicious: "bg-[var(--severity-medium)]/10 text-[var(--severity-medium)]",
   malicious: "bg-[var(--severity-critical)]/10 text-[var(--severity-critical)]",
 };
-
-/* ── 组件 ── */
 
 export function SkillSupplyChain({
   results,
@@ -59,7 +61,6 @@ export function SkillSupplyChain({
     <div className={`space-y-4 ${className}`}>
       {results.map((r) => (
         <div key={r.skillName} className="border">
-          {/* 头部 */}
           <div className="flex items-center justify-between px-4 py-2 border-b bg-muted/30">
             <span className="font-mono text-xs font-medium">{r.skillName}</span>
             {r.toxicMatch && (
@@ -68,8 +69,6 @@ export function SkillSupplyChain({
               </span>
             )}
           </div>
-
-          {/* Findings */}
           <div className="divide-y">
             {r.findings.map((f, i) => (
               <div key={i} className="px-4 py-2.5 flex gap-3">
@@ -88,8 +87,6 @@ export function SkillSupplyChain({
               </div>
             ))}
           </div>
-
-          {/* 版本时间线 */}
           {r.versions && (
             <div className="px-4 py-2.5 border-t bg-muted/10">
               <p className="font-mono text-[9px] text-muted-foreground mb-2">SUPPLY CHAIN TIMELINE</p>
@@ -105,6 +102,49 @@ export function SkillSupplyChain({
               </div>
             </div>
           )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────
+ * FixControlPoints — 代码行级修复点
+ * ───────────────────────────────────────────── */
+
+export type FixPoint = {
+  severity: Severity;
+  file: string;
+  line: number;
+  description: string;
+  suggestion?: string;
+};
+
+export function FixControlPoints({
+  points,
+  className = "",
+}: {
+  points: FixPoint[];
+  className?: string;
+}) {
+  return (
+    <div className={`border divide-y ${className}`}>
+      {points.map((p, i) => (
+        <div key={i} className="px-4 py-3 flex gap-3">
+          <span className={`shrink-0 font-mono text-[9px] px-1.5 py-px border self-start mt-0.5 ${SEV_STYLE[p.severity]}`}>
+            {p.severity.toUpperCase()}
+          </span>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="font-mono text-xs text-foreground">{p.file}:{p.line}</span>
+              <span className="text-[10px] text-muted-foreground">← {p.description}</span>
+            </div>
+            {p.suggestion && (
+              <p className="font-mono text-[10px] text-muted-foreground/70 mt-1">
+                Fix: {p.suggestion}
+              </p>
+            )}
+          </div>
         </div>
       ))}
     </div>
