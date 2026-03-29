@@ -122,10 +122,10 @@ function ProblemSection() {
       >
         <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-4">The problem</p>
         <h2 className="font-pixel-square text-3xl sm:text-4xl lg:text-5xl max-w-2xl leading-tight">
-          Your Agent is live.<br />You don't know how it fails.
+          Your Agent is live.<br />You don&apos;t know how it fails.
         </h2>
         <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground">
-          System prompt constraints aren't enough. The attack surface is your tool chain, your MCP servers, your Skills — and most of it has never been tested under adversarial conditions.
+          System prompt constraints aren&apos;t enough. The attack surface is your tool chain, your MCP servers, your Skills — and most of it has never been tested under adversarial conditions.
         </p>
 
         <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-px border border-border">
@@ -233,7 +233,7 @@ function CliDemoSection() {
             Two commands.<br />First PoC in 5 minutes.
           </h2>
           <p className="mt-3 text-sm text-muted-foreground max-w-lg leading-relaxed">
-            Every line of CLI output is a technical fact, not a progress animation. By the time Stewie finds the first path, you've already read the attack surface map.
+            Every line of CLI output is a technical fact, not a progress animation. By the time Stewie finds the first path, you&apos;ve already read the attack surface map.
           </p>
         </m.div>
 
@@ -476,7 +476,7 @@ function FeaturesSection() {
             detail={
               <div className="font-mono text-[9px] space-y-1">
                 <p className="text-muted-foreground">USER VISIBLE</p>
-                <p className="text-foreground text-[8px]">"Read GitHub file contents"</p>
+                <p className="text-foreground text-[8px]">&quot;Read GitHub file contents&quot;</p>
                 <p className="text-[var(--severity-critical,#ef4444)] mt-1">LLM RECEIVES ↓ hidden directive</p>
               </div>
             }
