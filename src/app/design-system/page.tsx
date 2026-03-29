@@ -20,6 +20,8 @@ const CATEGORY_ICONS: Record<string, string> = {
   foundations: "△",
   components: "□",
   maintenance: "○",
+  motion: "◎",
+  dashboard: "⬡",
 };
 
 export default function DesignSystemOverview() {

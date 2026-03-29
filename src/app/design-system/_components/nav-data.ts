@@ -58,6 +58,20 @@ export const CATEGORIES = [
     ],
   },
   {
+    id: "motion",
+    title: "Motion",
+    desc: "动画哲学、时间尺度、缓动曲线、品牌动效",
+    sections: [
+      { id: "philosophy", label: "Philosophy" },
+      { id: "timing", label: "Timing Scale" },
+      { id: "easing", label: "Easing Library" },
+      { id: "micro", label: "Micro Interactions" },
+      { id: "sequences", label: "Sequences" },
+      { id: "brand-motion", label: "Brand Motion" },
+      { id: "tokens", label: "Motion Tokens" },
+    ],
+  },
+  {
     id: "dashboard",
     title: "Dashboard",
     desc: "攻击链可视化、日志、指标、供应链",
